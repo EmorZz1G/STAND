@@ -90,6 +90,7 @@ class STAND(BaseDetector):
 
         self._model = None
         self.debug=debug
+        self.fit_on_loader=0
 
     def _build_model(self, input_dim):
         model = _StandNet(input_dim=input_dim, d_model=self.d_model,
@@ -106,6 +107,7 @@ class STAND(BaseDetector):
         return torch.optim.Adam(model.parameters(), lr=self.lr)
 
     def fit_loader(self, loader):
+        self.fit_on_loader=1
         # Peek one batch to get input dimension and validate shapes
         it = iter(loader)
         try:
@@ -167,6 +169,13 @@ class STAND(BaseDetector):
         return self
     
     def decision_function_loader(self, loader):
+        if self.fit_on_loader==0:
+            print('STAND: fit_on_loader is 0, please call fit_loader first')
+            return None
+        elif self.fit_on_loader==2:
+            print('STAND has been fitted by "fit" function, please call decision_function function')
+            return None
+
         self._model.eval()
         preds = []
         labels = []
@@ -184,6 +193,7 @@ class STAND(BaseDetector):
         return scores, labels
     
     def fit(self, X, y):
+        self.fit_on_loader=2
         n_samples, feature_dim = X.shape
 
         Xw = Window(window=self.slidingWindow).convert(X)
@@ -270,6 +280,13 @@ class STAND(BaseDetector):
         return self
 
     def decision_function(self, X):
+        if self.fit_on_loader==0:
+            print('STAND: fit_on_loader is 0, please call fit first')
+            return None
+        elif self.fit_on_loader==1:
+            print('STAND has been fitted by "fit_loader" function, please call decision_function_loader function')
+            return None
+
         """Window-level inference: one anomaly score per window.
 
         Uses non-overlapping windows (stride=win). The model outputs per-step
