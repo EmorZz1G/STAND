@@ -1,3 +1,4 @@
+from sklearn.utils import deprecated
 import torch
 import os
 import random
@@ -787,8 +788,81 @@ def get_loader_segment(index, data_path, batch_size, win_size=100, step=1, mode=
                              drop_last=False)
     return data_loader
 
+@deprecated 
+class SemiSupervisedDataset(Dataset):
+    """
+    半监督数据集：
+    - 取测试序列前 `train_test_split` 部分 (test_head) 与原始 train 拼接组成训练集（不使用标签，只保留占位）
+    - 剩余测试序列 (test_tail) 作为评估测试集
+    - 可选提供 all_test（= test_head + test_tail），便于还原完整时间线评估
+    """
+    def __init__(self, train_y, test_y, data_labels, win_size, step,
+                 mode="train", train_test_split=0.8, return_all_test=False):
+        """
+        train_y: (N1, D)
+        test_y: (N2, D)
+        data_labels: (N2,)  对应整个 test_y 的标签
+        mode: 'train' | 'test' | 'all_test'
+        """
+        self.mode = mode
+        self.step = step
+        self.win_size = win_size
+        self.return_all_test = return_all_test
+
+        split_idx = int(len(test_y) * train_test_split)
+        test_head = test_y[:split_idx]
+        test_head_labels = data_labels[:split_idx]
+        test_tail = test_y[split_idx:]
+        test_tail_labels = data_labels[split_idx:]
+
+        # 训练集：原始 train + test_head
+        train_concat = np.concatenate([train_y, test_head], axis=0)
+        train_labels = np.zeros(train_concat.shape[0], dtype=np.float32)  # 无监督：全部填 0
+
+        self.scaler = StandardScaler()
+        self.scaler.fit(train_concat)
+        train_concat = self.scaler.transform(train_concat)
+        test_tail = self.scaler.transform(test_tail)
+        test_head_scaled = self.scaler.transform(test_head)  # 用于 all_test
+
+        # 赋值
+        self.train = train_concat
+        self.train_labels = train_labels  # 仅占位
+        self.test = test_tail
+        self.test_labels = test_tail_labels.astype(np.float32)
+
+        if return_all_test or mode == 'all_test' or mode == 'all':
+            self.all_test_y = np.concatenate([test_head_scaled, test_tail], axis=0)
+            self.all_test_labels = np.concatenate([test_head_labels, test_tail_labels], axis=0).astype(np.float32)
+
+    def __len__(self):
+        if self.mode == "train":
+            return (self.train.shape[0] - self.win_size) // self.step + 1
+        elif self.mode == "test":
+            return (self.test.shape[0] - self.win_size) // self.step + 1
+        elif self.mode == "all_test" or self.mode == "all":
+            return (self.all_test_y.shape[0] - self.win_size) // self.step + 1
+        else:
+            raise ValueError(f"Unsupported mode: {self.mode}")
+
+    def __getitem__(self, index):
+        base = index * self.step
+        if self.mode == "train":
+            return (np.float32(self.train[base:base + self.win_size]),
+                    np.float32(self.train_labels[base:base + self.win_size]))
+        elif self.mode == "test":
+            return (np.float32(self.test[base:base + self.win_size]),
+                    np.float32(self.test_labels[base:base + self.win_size]))
+        elif self.mode == "all_test" or self.mode == "all":
+            return (np.float32(self.all_test_y[base:base + self.win_size]),
+                    np.float32(self.all_test_labels[base:base + self.win_size]))
+        else:
+            raise ValueError(f"Unsupported mode: {self.mode}")
 
 class SupervisedDataset(Dataset):
+    """
+    选择split比例划分训练集和测试集
+    """
     def __init__(self, data_y, data_labels, win_size, step, mode="train", train_test_split=0.8):
         self.mode = mode
         self.step = step
@@ -802,8 +876,8 @@ class SupervisedDataset(Dataset):
         self.scaler.fit(self.train_y)
         self.train_y = self.scaler.transform(self.train_y)
         self.test_y = self.scaler.transform(self.test_y)
-        self.all_test_y = np.concatenate([self.test_y, self.train_y], axis=0)
-        self.all_test_labels = np.concatenate([self.test_labels, self.train_labels], axis=0)
+        self.all_test_y = np.concatenate([self.train_y, self.test_y], axis=0)
+        self.all_test_labels = np.concatenate([self.train_labels, self.test_labels], axis=0)
         self.train = self.train_y
         self.test = self.test_y
         self.test_labels = self.test_labels
@@ -815,6 +889,70 @@ class SupervisedDataset(Dataset):
             return (self.train.shape[0] - self.win_size) // self.step + 1
         elif (self.mode == 'test'):
             return (self.test.shape[0] - self.win_size) // self.win_size + 1
+        elif (self.mode == 'all_test' or self.mode == 'all'):
+            return (self.all_test_y.shape[0] - self.win_size) // self.win_size + 1
+
+    def __getitem__(self, index):
+        index = index * self.step
+        if self.mode == "train":
+            return np.float32(self.train[index:index + self.win_size]), np.float32(
+                self.train_labels[index:index + self.win_size])
+        elif (self.mode == 'test'):
+            return np.float32(self.test[
+                                index // self.step * self.win_size:index // self.step * self.win_size + self.win_size]), np.float32(
+                self.test_labels[index // self.step * self.win_size:index // self.step * self.win_size + self.win_size])
+        elif (self.mode == 'all_test' or self.mode == 'all'):
+            return np.float32(self.all_test_y[
+                                index // self.step * self.win_size:index // self.step * self.win_size + self.win_size]), np.float32(
+                self.all_test_labels[index // self.step * self.win_size:index // self.step * self.win_size + self.win_size])
+        
+
+from ..models.feature import Window
+class RandomSupervisedDataset(Dataset):
+    """
+    采样anomaly_ratio的比率，保证训练集中有anomaly_ratio比例的异常样本
+    固定随机种子seed，保证每次采样结果一致
+    """
+    def __init__(self, data_y, data_labels, win_size, step=1, mode="train",
+                 anomaly_ratio=0.1,
+                 train_split_max=0.3,
+                 seed=42):
+        self.mode = mode
+        self.step = step
+        # set seed
+        np.random.seed(seed)
+        torch.manual_seed(seed)
+        random.seed(seed)
+        # 找到索引i，使得 sum(data_labels[:i])/i >= anomaly_ratio
+        idx = len(data_labels.shape[0] * anomaly_ratio)
+        train_idx_max = int(len(data_y) * train_split_max)
+        while idx < len(data_labels) and data_labels[:idx].sum() / idx < anomaly_ratio and idx < train_idx_max:
+            idx += 1
+        self.train_anomaly_ratio = train_anomaly_ratio = data_labels[:idx].sum() / idx
+        print(f"train anomaly ratio: {train_anomaly_ratio}, train length: {idx}")
+        self.test_anomaly_ratio = test_anomaly_ratio = data_labels[idx:].sum() / (len(data_labels) - idx)
+        print(f"test anomaly ratio: {test_anomaly_ratio}, test length: {len(data_labels) - idx}")
+        train_y = data_y[:idx]
+        train_labels = data_labels[:idx]
+        test_y = data_y[idx:]
+        test_labels = data_labels[idx:]
+        self.win_size = win_size
+        self.scaler = StandardScaler()
+        self.train_y = train_y
+        self.train_labels = train_labels
+        self.test_y = test_y
+        self.test_labels = test_labels
+        self.scaler.fit(self.train_y)
+        self.train_y = self.scaler.transform(self.train_y)
+        self.test_y = self.scaler.transform(self.test_y)
+        self.all_test_y = np.concatenate([self.train_y, self.test_y], axis=0)
+        self.all_test_labels = np.concatenate([self.train_labels, self.test_labels], axis=0)
+
+    def __len__(self):
+        if self.mode == "train":
+            return (self.train_y.shape[0] - self.win_size) // self.step + 1
+        elif (self.mode == 'test'):
+            return (self.test_y.shape[0] - self.win_size) // self.win_size + 1
         elif (self.mode == 'all_test' or self.mode == 'all'):
             return (self.all_test_y.shape[0] - self.win_size) // self.win_size + 1
 
