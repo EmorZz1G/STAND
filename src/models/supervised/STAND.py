@@ -21,23 +21,33 @@ from ...utils.utility import zscore
 from sklearn.metrics import precision_recall_curve
 
 class _StandNet(nn.Module):
-    def __init__(self, input_dim, d_model=128, num_layers=2, bidirectional=True):
+    def __init__(self, input_dim, d_model=32, num_layers=1, bidirectional=False, use_embedding=True):
         super(_StandNet, self).__init__()
-        self.emb = nn.Sequential(
-            nn.Linear(input_dim, d_model),
-            nn.GELU(),
-            nn.LayerNorm(d_model),
-            nn.Linear(d_model, d_model),
-            nn.GELU(),
-            nn.LayerNorm(d_model),
-        )
-        self.enc = nn.LSTM(d_model, d_model, num_layers, batch_first=True, bidirectional=bidirectional)
+        if not use_embedding:
+            d_model = input_dim
+        else:
+            self.emb = nn.Sequential(
+                nn.Linear(input_dim, d_model),
+                nn.GELU(),
+                nn.LayerNorm(d_model),
+                nn.Linear(d_model, d_model),
+                nn.GELU(),
+                nn.LayerNorm(d_model),
+            )
+        self.num_layers = num_layers
+        if num_layers == 0:
+            self.enc = nn.Identity()
+        else:
+            self.enc = nn.LSTM(d_model, d_model, num_layers, batch_first=True, bidirectional=bidirectional)
         proj_in = d_model * (2 if bidirectional else 1)
         self.clf = nn.Linear(proj_in, 1)
 
     def forward(self, x):
         x = self.emb(x)
-        x, _ = self.enc(x)
+        if self.num_layers > 0:
+            x, _ = self.enc(x)
+        else:
+            x = self.enc(x)
         x = self.clf(x).squeeze(-1)
         return x
 
@@ -71,7 +81,7 @@ class STAND(BaseDetector):
 
     def __init__(self, slidingWindow=32, sub=True, contamination=0.1, normalize=False,
                  epochs=10, batch_size=128, lr=1e-3, optimizer='adam',
-                 d_model=64, num_layers=1, bidirectional=False, device=None,
+                 d_model=32, num_layers=1, bidirectional=False, device=None,
                  debug=0,
                  **kwargs):
 
