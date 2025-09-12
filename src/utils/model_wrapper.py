@@ -6,10 +6,18 @@ except:
     import os
     from .slidingWindows import find_length_rank
 
-Unsupervise_AD_Pool = ['FFT', 'SR', 'NORMA', 'Series2Graph', 'Sub_IForest', 'IForest', 'LOF', 'Sub_LOF', 'POLY', 'MatrixProfile', 'Sub_PCA', 'PCA', 'HBOS', 
-                        'Sub_HBOS', 'KNN', 'Sub_KNN','KMeansAD', 'KMeansAD_U', 'KShapeAD', 'COPOD', 'CBLOF', 'COF', 'EIF', 'RobustPCA', 'Lag_Llama', 'TimesFM', 'Chronos', 'MOMENT_ZS','Random']
-Semisupervise_AD_Pool = ['Left_STAMPi', 'SAND', 'MCD', 'Sub_MCD', 'OCSVM', 'Sub_OCSVM', 'AutoEncoder', 'CNN', 'LSTMAD', 'TranAD', 'USAD', 'OmniAnomaly', 
-                        'AnomalyTransformer', 'TimesNet', 'FITS', 'Donut', 'OFA', 'MOMENT_FT', 'M2N2', 'DualTF']
+# Unsupervise_AD_Pool = ['FFT', 'SR', 'NORMA', 'Series2Graph', 'Sub_IForest', 'IForest', 'LOF', 'Sub_LOF', 'POLY', 'MatrixProfile', 'Sub_PCA', 'PCA', 'HBOS', 
+#                         'Sub_HBOS', 'KNN', 'Sub_KNN','KMeansAD', 'KMeansAD_U', 'KShapeAD', 'COPOD', 'CBLOF', 'COF', 'EIF', 'RobustPCA', 'Lag_Llama', 'TimesFM', 'Chronos', 'MOMENT_ZS','Random']
+
+Unsupervise_AD_Pool = ['IForest', 'LOF', 'POLY', 'MatrixProfile', 'PCA', 'HBOS', 'KNN', 'KMeansAD', 'KShapeAD', 'Random']
+
+# Semisupervise_AD_Pool = ['Left_STAMPi', 'SAND', 'MCD', 'Sub_MCD', 'OCSVM', 'Sub_OCSVM', 'AutoEncoder', 'CNN', 'LSTMAD', 'TranAD', 'USAD', 'OmniAnomaly', 
+#                         'AnomalyTransformer', 'TimesNet', 'FITS', 'Donut', 'OFA', 'MOMENT_FT', 'M2N2', 'DualTF']
+
+Semisupervise_AD_Pool = ['SAND', 'OCSVM', 'AutoEncoder', 'CNN', 'LSTMAD', 'TranAD', 'USAD', 'OmniAnomaly', 
+                        'AnomalyTransformer', 'TimesNet']
+
+Supervise_AD_Pool = ['KNN', 'LR', 'RF', 'SVM', 'STAND', 'AdaBoost', 'ExtraTrees', 'LightGBM']
 
 def run_Unsupervise_AD(model_name, data, **kwargs):
     try:
@@ -18,9 +26,9 @@ def run_Unsupervise_AD(model_name, data, **kwargs):
         results = function_to_call(data, **kwargs)
         return results
     except Exception as e:
+        raise e
         error_message = f"Model function '{function_name}' is not defined."
         print(error_message)
-        raise e
         return error_message
 
 
@@ -35,6 +43,75 @@ def run_Semisupervise_AD(model_name, data_train, data_test, **kwargs):
         error_message = f"Model function '{function_name}' is not defined."
         print(error_message)
         return error_message
+    
+def run_Supervise_AD(model_name, data_train, data_train_labels, data_test, **kwargs):
+    try:
+        function_name = f'run_{model_name}_S'
+        function_to_call = globals()[function_name]
+        results = function_to_call(data_train, data_train_labels, data_test, **kwargs)
+        return results
+    except Exception as e:
+        raise e
+        error_message = f"Model function '{function_name}' is not defined."
+        print(error_message)
+        return error_message
+    
+def run_KNN_S(data_train, data_train_labels, data_test, win_size=3, n_neighbors=5, **kwargs):
+    from ..models.supervised import KNN
+    clf = KNN(win_size=win_size, n_neighbors=n_neighbors)
+    clf.fit(data_train, data_train_labels)
+    score = clf.decision_function(data_test)
+    return score.ravel()
+
+def run_LR_S(data_train, data_train_labels, data_test, win_size=3, **kwargs):
+    from ..models.supervised import LR
+    clf = LR(win_size=win_size)
+    clf.fit(data_train, data_train_labels)
+    score = clf.decision_function(data_test)
+    return score.ravel()
+
+def run_RF_S(data_train, data_train_labels, data_test, win_size=3, n_estimators=100, **kwargs):
+    from ..models.supervised import RF
+    clf = RF(win_size=win_size, n_estimators=n_estimators)
+    clf.fit(data_train, data_train_labels)
+    score = clf.decision_function(data_test)
+    return score.ravel()
+
+def run_SVM_S(data_train, data_train_labels, data_test, win_size=3, C=1.0, **kwargs):
+    from ..models.supervised import SVM
+    clf = SVM(win_size=win_size, C=C)
+    clf.fit(data_train, data_train_labels)
+    score = clf.decision_function(data_test)
+    return score.ravel()
+
+def run_AdaBoost_S(data_train, data_train_labels, data_test, win_size=3, n_estimators=50, **kwargs):
+    from ..models.supervised import AdaBoost
+    clf = AdaBoost(win_size=win_size, n_estimators=n_estimators)
+    clf.fit(data_train, data_train_labels)
+    score = clf.decision_function(data_test)
+    return score.ravel()
+
+def run_ExtraTrees_S(data_train, data_train_labels, data_test, win_size=3, n_estimators=100, **kwargs):
+    from ..models.supervised import ExtraTrees
+    clf = ExtraTrees(win_size=win_size, n_estimators=n_estimators)
+    clf.fit(data_train, data_train_labels)
+    score = clf.decision_function(data_test)
+    return score.ravel()
+
+def run_LightGBM_S(data_train, data_train_labels, data_test, win_size=3, n_estimators=100, **kwargs):
+    from ..models.supervised import LightGBM
+    clf = LightGBM(win_size=win_size, n_estimators=n_estimators)
+    clf.fit(data_train, data_train_labels)
+    score = clf.decision_function(data_test)
+    return score.ravel()
+
+def run_STAND_S(data_train, data_train_labels, data_test, win_size=32, d_model=32, num_layers=1, bidirectional=False, epochs=10, batch_size=128, lr=1e-3, **kwargs):
+    from ..models.supervised import STAND
+    clf = STAND(win_size=win_size, d_model=d_model, num_layers=num_layers, bidirectional=bidirectional, epochs=epochs, batch_size=batch_size, lr=lr)
+    clf.fit(data_train, data_train_labels)
+    score = clf.decision_function(data_test)
+    return score.ravel()
+
     
 def run_Random(data):
     """A dummy function that returns a random score for each data point."""
