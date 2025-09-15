@@ -878,10 +878,10 @@ class SupervisedDataset(Dataset):
         self.test_y = self.scaler.transform(self.test_y)
         self.all_test_y = np.concatenate([self.train_y, self.test_y], axis=0)
         self.all_test_labels = np.concatenate([self.train_labels, self.test_labels], axis=0)
-        self.train = self.train_y
-        self.test = self.test_y
-        self.test_labels = self.test_labels
-        self.train_labels = self.train_labels
+        self.train = self.train_y = self.train_y.astype(np.float32)
+        self.test = self.test_y = self.test_y.astype(np.float32)
+        self.test_labels = self.test_labels.astype(np.float32)
+        self.train_labels = self.train_labels.astype(np.float32)
         
 
     def __len__(self):
@@ -920,13 +920,13 @@ class RandomSupervisedDataset(Dataset):
         self.mode = mode
         self.step = step
         # set seed
-        np.random.seed(seed)
-        torch.manual_seed(seed)
-        random.seed(seed)
+        # np.random.seed(seed)
+        # torch.manual_seed(seed)
+        # random.seed(seed)
         # 找到索引i，使得 sum(data_labels[:i])/i >= anomaly_ratio
         idx = len(data_labels.shape[0] * anomaly_ratio)
         train_idx_max = int(len(data_y) * train_split_max)
-        while idx < len(data_labels) and data_labels[:idx].sum() / idx < anomaly_ratio and idx < train_idx_max:
+        while data_labels[:idx].sum() / idx < anomaly_ratio and idx < train_idx_max:
             idx += 1
         self.train_anomaly_ratio = train_anomaly_ratio = data_labels[:idx].sum() / idx
         print(f"train anomaly ratio: {train_anomaly_ratio}, train length: {idx}")
@@ -943,8 +943,8 @@ class RandomSupervisedDataset(Dataset):
         self.test_y = test_y
         self.test_labels = test_labels
         self.scaler.fit(self.train_y)
-        self.train_y = self.scaler.transform(self.train_y)
-        self.test_y = self.scaler.transform(self.test_y)
+        self.train_y = self.train = self.scaler.transform(self.train_y)
+        self.test_y = self.test = self.scaler.transform(self.test_y)
         self.all_test_y = np.concatenate([self.train_y, self.test_y], axis=0)
         self.all_test_labels = np.concatenate([self.train_labels, self.test_labels], axis=0)
 
