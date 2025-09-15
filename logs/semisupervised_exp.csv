@@ -1,0 +1,2 @@
+d_model,num_layers,bidirectional,model_name,task_name,win_size,step_size,batch_size,epochs,lr,model_saving_path,dataset_path,dataset_name,if_save,index,train_test_split,anomaly_ratio,train_split_max,metric_list,quantile,CCE,F1,Aff-F1,UAff-F1,AUC-ROC,VUS-PR
+32,1,0,OCSVM,semisupervised,3,1,128,10,0.001,/home/zzj/projects/STAND/model_saving,/home/zzj/projects/FTSAD/datasets,PSM,0,0,0.5,0.1,0.5,"['CCE', 'F1', 'Aff-F1', 'UAff-F1', 'AUC-ROC', 'VUS-PR']",0.95,0.02840253965189561,0.1702985437736767,0.4341642323962439,0.30487519966124105,0.5263293486466479,0.3845999878471361

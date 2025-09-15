@@ -4,7 +4,11 @@ try:
     from slidingWindows import find_length_rank
 except:
     import os
-    from .slidingWindows import find_length_rank
+    import sys
+    import pathlib
+    proj_pth = pathlib.Path(__file__).parent.parent.resolve()
+    sys.path.append((proj_pth))
+    from src.utils.slidingWindows import find_length_rank
 
 # Unsupervise_AD_Pool = ['FFT', 'SR', 'NORMA', 'Series2Graph', 'Sub_IForest', 'IForest', 'LOF', 'Sub_LOF', 'POLY', 'MatrixProfile', 'Sub_PCA', 'PCA', 'HBOS', 
 #                         'Sub_HBOS', 'KNN', 'Sub_KNN','KMeansAD', 'KMeansAD_U', 'KShapeAD', 'COPOD', 'CBLOF', 'COF', 'EIF', 'RobustPCA', 'Lag_Llama', 'TimesFM', 'Chronos', 'MOMENT_ZS','Random']
@@ -14,7 +18,7 @@ Unsupervise_AD_Pool = ['IForest', 'LOF', 'POLY', 'MatrixProfile', 'PCA', 'HBOS',
 # Semisupervise_AD_Pool = ['Left_STAMPi', 'SAND', 'MCD', 'Sub_MCD', 'OCSVM', 'Sub_OCSVM', 'AutoEncoder', 'CNN', 'LSTMAD', 'TranAD', 'USAD', 'OmniAnomaly', 
 #                         'AnomalyTransformer', 'TimesNet', 'FITS', 'Donut', 'OFA', 'MOMENT_FT', 'M2N2', 'DualTF']
 
-Semisupervise_AD_Pool = ['SAND', 'OCSVM', 'AutoEncoder', 'CNN', 'LSTMAD', 'TranAD', 'USAD', 'OmniAnomaly', 
+Semisupervise_AD_Pool = ['OCSVM', 'AutoEncoder', 'CNN', 'LSTMAD', 'TranAD', 'USAD', 'OmniAnomaly', 
                         'AnomalyTransformer', 'TimesNet']
 
 Supervise_AD_Pool = ['KNN', 'LR', 'RF', 'SVM', 'STAND', 'AdaBoost', 'ExtraTrees', 'LightGBM']
@@ -44,11 +48,11 @@ def run_Semisupervise_AD(model_name, data_train, data_test, **kwargs):
         print(error_message)
         return error_message
     
-def run_Supervise_AD(model_name, data_train, data_train_labels, data_test, **kwargs):
+def run_Supervise_AD(model_name, data_train, data_train_labels, data_test, data_all_test=None, **kwargs):
     try:
         function_name = f'run_{model_name}_S'
         function_to_call = globals()[function_name]
-        results = function_to_call(data_train, data_train_labels, data_test, **kwargs)
+        results = function_to_call(data_train, data_train_labels, data_test, data_all_test, **kwargs)
         return results
     except Exception as e:
         raise e
@@ -56,70 +60,103 @@ def run_Supervise_AD(model_name, data_train, data_train_labels, data_test, **kwa
         print(error_message)
         return error_message
     
-def run_KNN_S(data_train, data_train_labels, data_test, win_size=3, n_neighbors=5, **kwargs):
+def run_KNN_S(data_train, data_train_labels, data_test, data_all_test=None, win_size=3, n_neighbors=5, **kwargs):
     from ..models.supervised import KNN
     clf = KNN(win_size=win_size, n_neighbors=n_neighbors)
     clf.fit(data_train, data_train_labels)
     score = clf.decision_function(data_test)
-    return score.ravel()
+    print(score.shape,score,np.mean(score))
+    if data_all_test is not None:
+        all_score = clf.decision_function(data_all_test)
+        return score.ravel(), all_score.ravel()
+    else:
+        return score.ravel()
 
-def run_LR_S(data_train, data_train_labels, data_test, win_size=3, **kwargs):
+def run_LR_S(data_train, data_train_labels, data_test, data_all_test=None, win_size=3, **kwargs):
     from ..models.supervised import LR
     clf = LR(win_size=win_size)
     clf.fit(data_train, data_train_labels)
     score = clf.decision_function(data_test)
-    return score.ravel()
+    if data_all_test is not None:
+        all_score = clf.decision_function(data_all_test)
+        return score.ravel(), all_score.ravel()
+    else:
+        return score.ravel()
 
-def run_RF_S(data_train, data_train_labels, data_test, win_size=3, n_estimators=100, **kwargs):
+def run_RF_S(data_train, data_train_labels, data_test, data_all_test=None, win_size=3, n_estimators=100, **kwargs):
     from ..models.supervised import RF
     clf = RF(win_size=win_size, n_estimators=n_estimators)
     clf.fit(data_train, data_train_labels)
     score = clf.decision_function(data_test)
-    return score.ravel()
+    if data_all_test is not None:
+        all_score = clf.decision_function(data_all_test)
+        return score.ravel(), all_score.ravel()
+    else:
+        return score.ravel()
 
-def run_SVM_S(data_train, data_train_labels, data_test, win_size=3, C=1.0, **kwargs):
+def run_SVM_S(data_train, data_train_labels, data_test, data_all_test=None, win_size=3, C=1.0, **kwargs):
     from ..models.supervised import SVM
     clf = SVM(win_size=win_size, C=C)
     clf.fit(data_train, data_train_labels)
     score = clf.decision_function(data_test)
-    return score.ravel()
+    if data_all_test is not None:
+        all_score = clf.decision_function(data_all_test)
+        return score.ravel(), all_score.ravel()
+    else:
+        return score.ravel()
 
-def run_AdaBoost_S(data_train, data_train_labels, data_test, win_size=3, n_estimators=50, **kwargs):
+def run_AdaBoost_S(data_train, data_train_labels, data_test, data_all_test=None, win_size=3, n_estimators=50, **kwargs):
     from ..models.supervised import AdaBoost
     clf = AdaBoost(win_size=win_size, n_estimators=n_estimators)
     clf.fit(data_train, data_train_labels)
     score = clf.decision_function(data_test)
-    return score.ravel()
+    if data_all_test is not None:
+        all_score = clf.decision_function(data_all_test)
+        return score.ravel(), all_score.ravel()
+    else:
+        return score.ravel()
 
-def run_ExtraTrees_S(data_train, data_train_labels, data_test, win_size=3, n_estimators=100, **kwargs):
+def run_ExtraTrees_S(data_train, data_train_labels, data_test, data_all_test=None, win_size=3, n_estimators=100, **kwargs):
     from ..models.supervised import ExtraTrees
     clf = ExtraTrees(win_size=win_size, n_estimators=n_estimators)
     clf.fit(data_train, data_train_labels)
     score = clf.decision_function(data_test)
-    return score.ravel()
+    if data_all_test is not None:
+        all_score = clf.decision_function(data_all_test)
+        return score.ravel(), all_score.ravel()
+    else:
+        return score.ravel()
 
-def run_LightGBM_S(data_train, data_train_labels, data_test, win_size=3, n_estimators=100, **kwargs):
+def run_LightGBM_S(data_train, data_train_labels, data_test, data_all_test=None, win_size=3, n_estimators=100, **kwargs):
     from ..models.supervised import LightGBM
     clf = LightGBM(win_size=win_size, n_estimators=n_estimators)
     clf.fit(data_train, data_train_labels)
     score = clf.decision_function(data_test)
-    return score.ravel()
+    if data_all_test is not None:
+        all_score = clf.decision_function(data_all_test)
+        return score.ravel(), all_score.ravel()
+    else:
+        return score.ravel()
 
-def run_STAND_S(data_train, data_train_labels, data_test, win_size=32, d_model=32, num_layers=1, bidirectional=False, epochs=10, batch_size=128, lr=1e-3, **kwargs):
+def run_STAND_S(data_train, data_train_labels, data_test,  data_all_test=None, win_size=32, d_model=32, num_layers=1, bidirectional=False, epochs=10, batch_size=128, lr=1e-3, **kwargs):
     from ..models.supervised import STAND
     clf = STAND(win_size=win_size, d_model=d_model, num_layers=num_layers, bidirectional=bidirectional, epochs=epochs, batch_size=batch_size, lr=lr)
     clf.fit(data_train, data_train_labels)
     score = clf.decision_function(data_test)
-    return score.ravel()
+    if data_all_test is not None:
+        all_score = clf.decision_function(data_all_test)
+        return score.ravel(), all_score.ravel()
+    else:
+        return score.ravel()
 
     
-def run_Random(data):
+def run_Random(data, **kwargs):
     """A dummy function that returns a random score for each data point."""
     # Generate a random score between 0 and 1 for each data point
     score = np.random.rand(data.shape[0])
     return score.ravel()
 
-def run_FFT(data, ifft_parameters=5, local_neighbor_window=21, local_outlier_threshold=0.6, max_region_size=50, max_sign_change_distance=10):
+def run_FFT(data, ifft_parameters=5, local_neighbor_window=21, local_outlier_threshold=0.6, max_region_size=50, max_sign_change_distance=10, **kwargs):
     from ..models.FFT import FFT
     clf = FFT(ifft_parameters=ifft_parameters, local_neighbor_window=local_neighbor_window, local_outlier_threshold=local_outlier_threshold, max_region_size=max_region_size, max_sign_change_distance=max_sign_change_distance)
     clf.fit(data)  
@@ -127,7 +164,7 @@ def run_FFT(data, ifft_parameters=5, local_neighbor_window=21, local_outlier_thr
     del clf
     return score.ravel()
 
-def run_Sub_IForest(data, periodicity=1, n_estimators=100, max_features=1, n_jobs=1):
+def run_Sub_IForest(data, periodicity=1, n_estimators=100, max_features=1, n_jobs=1, **kwargs):
     from ..models.IForest import IForest
     slidingWindow = find_length_rank(data, rank=periodicity)
     clf = IForest(slidingWindow=slidingWindow, n_estimators=n_estimators, max_features=max_features, n_jobs=n_jobs)
@@ -135,29 +172,29 @@ def run_Sub_IForest(data, periodicity=1, n_estimators=100, max_features=1, n_job
     score = clf.decision_scores_
     return score.ravel()
 
-def run_IForest(data, slidingWindow=100, n_estimators=100, max_features=1, n_jobs=1):
+def run_IForest(data, slidingWindow=100, n_estimators=100, max_features=1, n_jobs=1, **kwargs):
     from ..models.IForest import IForest
     clf = IForest(slidingWindow=slidingWindow, n_estimators=n_estimators, max_features=max_features, n_jobs=n_jobs)
     clf.fit(data)
     score = clf.decision_scores_
     return score.ravel()
 
-def run_Sub_LOF(data, periodicity=1, n_neighbors=30, metric='minkowski', n_jobs=1):
+def run_Sub_LOF(data, periodicity=1, n_neighbors=30, metric='minkowski', n_jobs=1, **kwargs):
     from ..models.LOF import LOF
     slidingWindow = find_length_rank(data, rank=periodicity)
-    clf = LOF(slidingWindow=slidingWindow, n_neighbors=n_neighbors, metric=metric, n_jobs=n_jobs)
+    clf = LOF(slidingWindow=slidingWindow, n_neighbors=n_neighbors, metric=metric, n_jobs=n_jobs, **kwargs)
     clf.fit(data)
     score = clf.decision_scores_
     return score.ravel()
 
-def run_LOF(data, slidingWindow=1, n_neighbors=30, metric='minkowski', n_jobs=1):
+def run_LOF(data, slidingWindow=1, n_neighbors=30, metric='minkowski', n_jobs=1, **kwargs):
     from ..models.LOF import LOF
     clf = LOF(slidingWindow=slidingWindow, n_neighbors=n_neighbors, metric=metric, n_jobs=n_jobs)
     clf.fit(data)
     score = clf.decision_scores_
     return score.ravel()
 
-def run_POLY(data, periodicity=1, power=3, n_jobs=1):
+def run_POLY(data, periodicity=1, power=3, n_jobs=1, **kwargs):
     from ..models.POLY import POLY
     slidingWindow = find_length_rank(data, rank=periodicity)
     clf = POLY(power=power, window = slidingWindow)
@@ -165,7 +202,7 @@ def run_POLY(data, periodicity=1, power=3, n_jobs=1):
     score = clf.decision_scores_
     return score.ravel()
 
-def run_MatrixProfile(data, periodicity=1, n_jobs=1):
+def run_MatrixProfile(data, periodicity=1, n_jobs=1, **kwargs):
     from ..models.MatrixProfile import MatrixProfile
     slidingWindow = find_length_rank(data, rank=periodicity)
     clf = MatrixProfile(window=slidingWindow)
@@ -173,14 +210,14 @@ def run_MatrixProfile(data, periodicity=1, n_jobs=1):
     score = clf.decision_scores_
     return score.ravel()
 
-def run_Left_STAMPi(data_train, data):
+def run_Left_STAMPi(data_train, data, **kwargs):
     from ..models.Left_STAMPi import Left_STAMPi
     clf = Left_STAMPi(n_init_train=len(data_train), window_size=100)
     clf.fit(data)
     score = clf.decision_function(data)
     return score.ravel()
 
-def run_SAND(data_train, data_test, periodicity=1):
+def run_SAND(data_train, data_test, periodicity=1, **kwargs):
     from ..models.SAND import SAND
     slidingWindow = find_length_rank(data_test, rank=periodicity)
     clf = SAND(pattern_length=slidingWindow, subsequence_length=4*(slidingWindow))
@@ -188,7 +225,7 @@ def run_SAND(data_train, data_test, periodicity=1):
     score = clf.decision_scores_
     return score.ravel()
 
-def run_KShapeAD(data, periodicity=1):
+def run_KShapeAD(data, periodicity=1, **kwargs):
     from ..models.SAND import SAND
     slidingWindow = find_length_rank(data, rank=periodicity)
     clf = SAND(pattern_length=slidingWindow, subsequence_length=4*(slidingWindow))
@@ -196,7 +233,7 @@ def run_KShapeAD(data, periodicity=1):
     score = clf.decision_scores_
     return score.ravel()
 
-def run_Series2Graph(data, periodicity=1):
+def run_Series2Graph(data, periodicity=1, **kwargs):
     from ..models.Series2Graph import Series2Graph
     slidingWindow = find_length_rank(data, rank=periodicity)
 
@@ -210,7 +247,7 @@ def run_Series2Graph(data, periodicity=1):
     score = np.array([score[0]]*math.ceil(query_length//2) + list(score) + [score[-1]]*(query_length//2))
     return score.ravel()
 
-def run_Sub_PCA(data, periodicity=1, n_components=None, n_jobs=1):
+def run_Sub_PCA(data, periodicity=1, n_components=None, n_jobs=1, **kwargs):
     from ..models.PCA import PCA
     slidingWindow = find_length_rank(data, rank=periodicity)
     clf = PCA(slidingWindow = slidingWindow, n_components=n_components)
@@ -219,7 +256,7 @@ def run_Sub_PCA(data, periodicity=1, n_components=None, n_jobs=1):
     del clf
     return score.ravel()
 
-def run_PCA(data, slidingWindow=30, n_components=None, n_jobs=1):
+def run_PCA(data, slidingWindow=30, n_components=None, n_jobs=1, **kwargs):
     from ..models.PCA import PCA
     clf = PCA(slidingWindow = slidingWindow, n_components=n_components)
     clf.fit(data)
@@ -227,7 +264,7 @@ def run_PCA(data, slidingWindow=30, n_components=None, n_jobs=1):
     del clf
     return score.ravel()
 
-def run_NORMA(data, periodicity=1, clustering='hierarchical', n_jobs=1):
+def run_NORMA(data, periodicity=1, clustering='hierarchical', n_jobs=1, **kwargs):
     from ..models.NormA import NORMA
     slidingWindow = find_length_rank(data, rank=periodicity)
     clf = NORMA(pattern_length=slidingWindow, nm_size=3*slidingWindow, clustering=clustering)
@@ -239,7 +276,7 @@ def run_NORMA(data, periodicity=1, clustering='hierarchical', n_jobs=1):
         score = score[start:]
     return score.ravel()
 
-def run_Sub_HBOS(data, periodicity=1, n_bins=10, tol=0.5, n_jobs=1):
+def run_Sub_HBOS(data, periodicity=1, n_bins=10, tol=0.5, n_jobs=1, **kwargs):
     from ..models.HBOS import HBOS
     slidingWindow = find_length_rank(data, rank=periodicity)
     clf = HBOS(slidingWindow=slidingWindow, n_bins=n_bins, tol=tol)
@@ -247,7 +284,7 @@ def run_Sub_HBOS(data, periodicity=1, n_bins=10, tol=0.5, n_jobs=1):
     score = clf.decision_scores_
     return score.ravel()
 
-def run_HBOS(data, slidingWindow=1, n_bins=10, tol=0.5, n_jobs=1):
+def run_HBOS(data, slidingWindow=1, n_bins=10, tol=0.5, n_jobs=1, **kwargs):
     from ..models.HBOS import HBOS
     clf = HBOS(slidingWindow=slidingWindow, n_bins=n_bins, tol=tol)
     clf.fit(data)
@@ -255,7 +292,7 @@ def run_HBOS(data, slidingWindow=1, n_bins=10, tol=0.5, n_jobs=1):
     del clf
     return score.ravel()
 
-def run_Sub_OCSVM(data_train, data_test, kernel='rbf', nu=0.5, periodicity=1, n_jobs=1):
+def run_Sub_OCSVM(data_train, data_test, kernel='rbf', nu=0.5, periodicity=1, n_jobs=1, **kwargs):
     from ..models.OCSVM import OCSVM
     slidingWindow = find_length_rank(data_test, rank=periodicity)
     clf = OCSVM(slidingWindow=slidingWindow, kernel=kernel, nu=nu)
@@ -264,7 +301,7 @@ def run_Sub_OCSVM(data_train, data_test, kernel='rbf', nu=0.5, periodicity=1, n_
     del clf
     return score.ravel()
 
-def run_OCSVM(data_train, data_test, kernel='rbf', nu=0.5, slidingWindow=1, n_jobs=1):
+def run_OCSVM(data_train, data_test, kernel='rbf', nu=0.5, slidingWindow=1, n_jobs=1, **kwargs):
     from ..models.OCSVM import OCSVM
     clf = OCSVM(slidingWindow=slidingWindow, kernel=kernel, nu=nu)
     clf.fit(data_train)
@@ -272,7 +309,7 @@ def run_OCSVM(data_train, data_test, kernel='rbf', nu=0.5, slidingWindow=1, n_jo
     del clf
     return score.ravel()
 
-def run_Sub_MCD(data_train, data_test, support_fraction=None, periodicity=1, n_jobs=1):
+def run_Sub_MCD(data_train, data_test, support_fraction=None, periodicity=1, n_jobs=1, **kwargs):
     from ..models.MCD import MCD
     slidingWindow = find_length_rank(data_test, rank=periodicity)
     clf = MCD(slidingWindow=slidingWindow, support_fraction=support_fraction)
@@ -281,7 +318,7 @@ def run_Sub_MCD(data_train, data_test, support_fraction=None, periodicity=1, n_j
     del clf
     return score.ravel()
 
-def run_MCD(data_train, data_test, support_fraction=None, slidingWindow=1, n_jobs=1):
+def run_MCD(data_train, data_test, support_fraction=None, slidingWindow=1, n_jobs=1, **kwargs):
     from ..models.MCD import MCD
     clf = MCD(slidingWindow=slidingWindow, support_fraction=support_fraction)
     clf.fit(data_train)
@@ -289,7 +326,7 @@ def run_MCD(data_train, data_test, support_fraction=None, slidingWindow=1, n_job
     del clf
     return score.ravel()
 
-def run_Sub_KNN(data, n_neighbors=10, method='largest', periodicity=1, n_jobs=1):
+def run_Sub_KNN(data, n_neighbors=10, method='largest', periodicity=1, n_jobs=1, **kwargs):
     from ..models.KNN import KNN
     slidingWindow = find_length_rank(data, rank=periodicity)
     clf = KNN(slidingWindow=slidingWindow, n_neighbors=n_neighbors,method=method, n_jobs=n_jobs)
@@ -298,67 +335,67 @@ def run_Sub_KNN(data, n_neighbors=10, method='largest', periodicity=1, n_jobs=1)
     del clf
     return score.ravel()
 
-def run_KNN(data, slidingWindow=1, n_neighbors=10, method='largest', n_jobs=1):
+def run_KNN(data, slidingWindow=1, n_neighbors=10, method='largest', n_jobs=1, **kwargs):
     from ..models.KNN import KNN
     clf = KNN(slidingWindow=slidingWindow, n_neighbors=n_neighbors, method=method, n_jobs=n_jobs)
     clf.fit(data)
     score = clf.decision_scores_
     return score.ravel()
 
-def run_KMeansAD(data, n_clusters=20, window_size=20, n_jobs=1):
+def run_KMeansAD(data, n_clusters=20, window_size=20, n_jobs=1, **kwargs):
     from ..models.KMeansAD import KMeansAD
     clf = KMeansAD(k=n_clusters, window_size=window_size, stride=1, n_jobs=n_jobs)
     score = clf.fit_predict(data)
     return score.ravel()
 
-def run_KMeansAD_U(data, n_clusters=20, periodicity=1,n_jobs=1):
+def run_KMeansAD_U(data, n_clusters=20, periodicity=1,n_jobs=1, **kwargs):
     from ..models.KMeansAD import KMeansAD
     slidingWindow = find_length_rank(data, rank=periodicity)
     clf = KMeansAD(k=n_clusters, window_size=slidingWindow, stride=1, n_jobs=n_jobs)
     score = clf.fit_predict(data)
     return score.ravel()
 
-def run_COPOD(data, n_jobs=1):
+def run_COPOD(data, n_jobs=1, **kwargs):
     from ..models.COPOD import COPOD
     clf = COPOD(n_jobs=n_jobs)
     clf.fit(data)
     score = clf.decision_scores_
     return score.ravel()
 
-def run_CBLOF(data, n_clusters=8, alpha=0.9, n_jobs=1):
+def run_CBLOF(data, n_clusters=8, alpha=0.9, n_jobs=1, **kwargs):
     from ..models.CBLOF import CBLOF
     clf = CBLOF(n_clusters=n_clusters, alpha=alpha, n_jobs=n_jobs)
     clf.fit(data)
     score = clf.decision_scores_
     return score.ravel()
 
-def run_COF(data, n_neighbors=30):
+def run_COF(data, n_neighbors=30, **kwargs):
     from ..models.COF import COF
     clf = COF(n_neighbors=n_neighbors)
     clf.fit(data)
     score = clf.decision_scores_
     return score.ravel()
 
-def run_EIF(data, n_trees=100):
+def run_EIF(data, n_trees=100, **kwargs):
     from ..models.EIF import EIF
     clf = EIF(n_trees=n_trees)
     clf.fit(data)
     score = clf.decision_scores_
     return score.ravel()
 
-def run_RobustPCA(data, max_iter=1000):
+def run_RobustPCA(data, max_iter=1000, **kwargs):
     from ..models.RobustPCA import RobustPCA
     clf = RobustPCA(max_iter=max_iter)
     clf.fit(data)
     score = clf.decision_scores_
     return score.ravel()
 
-def run_SR(data, periodicity=1):
+def run_SR(data, periodicity=1, **kwargs):
     from ..models.SR import SR
     slidingWindow = find_length_rank(data, rank=periodicity)
     return SR(data, window_size=slidingWindow)
 
-def run_AutoEncoder(data_train, data_test, window_size=100, hidden_neurons=[64, 32], n_jobs=1):
+def run_AutoEncoder(data_train, data_test, window_size=100, hidden_neurons=[64, 32], n_jobs=1, **kwargs):
     from ..models.AE import AutoEncoder
     clf = AutoEncoder(slidingWindow=window_size, hidden_neurons=hidden_neurons, batch_size=128, epochs=50)
     clf.fit(data_train)
@@ -366,7 +403,7 @@ def run_AutoEncoder(data_train, data_test, window_size=100, hidden_neurons=[64, 
     del clf
     return score.ravel()
 
-def run_CNN(data_train, data_test, window_size=100, num_channel=[32, 32, 40], lr=0.0008, n_jobs=1):
+def run_CNN(data_train, data_test, window_size=100, num_channel=[32, 32, 40], lr=0.0008, n_jobs=1, **kwargs):
     from ..models.CNN import CNN
     clf = CNN(window_size=window_size, num_channel=num_channel, feats=data_test.shape[1], lr=lr, batch_size=128)
     clf.fit(data_train)
@@ -374,14 +411,14 @@ def run_CNN(data_train, data_test, window_size=100, num_channel=[32, 32, 40], lr
     del clf
     return score.ravel()
 
-def run_LSTMAD(data_train, data_test, window_size=100, lr=0.0008):
+def run_LSTMAD(data_train, data_test, window_size=100, lr=0.0008, **kwargs):
     from ..models.LSTMAD import LSTMAD
     clf = LSTMAD(window_size=window_size, pred_len=1, lr=lr, feats=data_test.shape[1], batch_size=128)
     clf.fit(data_train)
     score = clf.decision_function(data_test)
     return score.ravel()
 
-def run_TranAD(data_train, data_test, win_size=10, lr=1e-3):
+def run_TranAD(data_train, data_test, win_size=10, lr=1e-3, **kwargs):
     from ..models.TranAD import TranAD
     clf = TranAD(win_size=win_size, feats=data_test.shape[1], lr=lr)
     clf.fit(data_train)
@@ -389,7 +426,7 @@ def run_TranAD(data_train, data_test, win_size=10, lr=1e-3):
     del clf
     return score.ravel()
 
-def run_AnomalyTransformer(data_train, data_test, win_size=100, lr=1e-4, batch_size=128):
+def run_AnomalyTransformer(data_train, data_test, win_size=100, lr=1e-4, batch_size=128, **kwargs):
     from ..models.AnomalyTransformer import AnomalyTransformer
     clf = AnomalyTransformer(win_size=win_size, input_c=data_test.shape[1], lr=lr, batch_size=batch_size)
     clf.fit(data_train)
@@ -397,7 +434,7 @@ def run_AnomalyTransformer(data_train, data_test, win_size=100, lr=1e-4, batch_s
     del clf
     return score.ravel()
 
-def run_OmniAnomaly(data_train, data_test, win_size=100, lr=0.002):
+def run_OmniAnomaly(data_train, data_test, win_size=100, lr=0.002, **kwargs):
     from ..models.OmniAnomaly import OmniAnomaly
     clf = OmniAnomaly(win_size=win_size, feats=data_test.shape[1], lr=lr)
     clf.fit(data_train)
@@ -405,7 +442,7 @@ def run_OmniAnomaly(data_train, data_test, win_size=100, lr=0.002):
     del clf
     return score.ravel()
 
-def run_USAD(data_train, data_test, win_size=5, lr=1e-4):
+def run_USAD(data_train, data_test, win_size=5, lr=1e-4, **kwargs):
     from ..models.USAD import USAD
     clf = USAD(win_size=win_size, feats=data_test.shape[1], lr=lr, epochs=100)
     clf.fit(data_train)
@@ -413,7 +450,7 @@ def run_USAD(data_train, data_test, win_size=5, lr=1e-4):
     del clf
     return score.ravel()
 
-def run_Donut(data_train, data_test, win_size=120, lr=1e-4, batch_size=128):
+def run_Donut(data_train, data_test, win_size=120, lr=1e-4, batch_size=128, **kwargs):
     from ..models.Donut import Donut
     clf = Donut(win_size=win_size, input_c=data_test.shape[1], lr=lr, batch_size=batch_size)
     clf.fit(data_train)
@@ -421,7 +458,7 @@ def run_Donut(data_train, data_test, win_size=120, lr=1e-4, batch_size=128):
     del clf
     return score.ravel()
 
-def run_TimesNet(data_train, data_test, win_size=96, lr=1e-4):
+def run_TimesNet(data_train, data_test, win_size=96, lr=1e-4, **kwargs):
     from ..models.TimesNet import TimesNet
     clf = TimesNet(win_size=win_size, enc_in=data_test.shape[1], lr=lr, epochs=50)
     clf.fit(data_train)
@@ -429,7 +466,7 @@ def run_TimesNet(data_train, data_test, win_size=96, lr=1e-4):
     del clf
     return score.ravel()
 
-def run_FITS(data_train, data_test, win_size=100, lr=1e-3):
+def run_FITS(data_train, data_test, win_size=100, lr=1e-3, **kwargs):
     from ..models.FITS import FITS
     clf = FITS(win_size=win_size, input_c=data_test.shape[1], lr=lr, batch_size=128)
     clf.fit(data_train)
@@ -437,7 +474,7 @@ def run_FITS(data_train, data_test, win_size=100, lr=1e-3):
     del clf
     return score.ravel()
 
-def run_OFA(data_train, data_test, win_size=100, batch_size = 64):
+def run_OFA(data_train, data_test, win_size=100, batch_size = 64, **kwargs):
     from ..models.OFA import OFA
     clf = OFA(win_size=win_size, enc_in=data_test.shape[1], epochs=10, batch_size=batch_size)
     clf.fit(data_train)
@@ -445,7 +482,7 @@ def run_OFA(data_train, data_test, win_size=100, batch_size = 64):
     del clf
     return score.ravel()
 
-def run_Lag_Llama(data, win_size=96, batch_size=64):
+def run_Lag_Llama(data, win_size=96, batch_size=64, **kwargs):
     from ..models.Lag_Llama import Lag_Llama
     clf = Lag_Llama(win_size=win_size, input_c=data.shape[1], batch_size=batch_size)
     clf.fit(data)
@@ -453,7 +490,7 @@ def run_Lag_Llama(data, win_size=96, batch_size=64):
     del clf
     return score.ravel()
 
-def run_Chronos(data, win_size=50, batch_size=64):
+def run_Chronos(data, win_size=50, batch_size=64, **kwargs):
     from ..models.Chronos import Chronos
     clf = Chronos(win_size=win_size, prediction_length=1, input_c=data.shape[1], model_size='base', batch_size=batch_size)
     clf.fit(data)
@@ -461,7 +498,7 @@ def run_Chronos(data, win_size=50, batch_size=64):
     del clf
     return score.ravel()
 
-def run_TimesFM(data, win_size=96):
+def run_TimesFM(data, win_size=96, **kwargs):
     from ..models.TimesFM import TimesFM
     clf = TimesFM(win_size=win_size)
     clf.fit(data)
@@ -469,7 +506,7 @@ def run_TimesFM(data, win_size=96):
     del clf
     return score.ravel()
 
-def run_MOMENT_ZS(data, win_size=256):
+def run_MOMENT_ZS(data, win_size=256, **kwargs):
     from ..models.MOMENT import MOMENT
     clf = MOMENT(win_size=win_size, input_c=data.shape[1])
 
@@ -479,7 +516,7 @@ def run_MOMENT_ZS(data, win_size=256):
     del clf
     return score.ravel()
 
-def run_MOMENT_FT(data_train, data_test, win_size=256):
+def run_MOMENT_FT(data_train, data_test, win_size=256, **kwargs):
     from ..models.MOMENT import MOMENT
     clf = MOMENT(win_size=win_size, input_c=data_test.shape[1])
 
@@ -490,7 +527,7 @@ def run_MOMENT_FT(data_train, data_test, win_size=256):
     return score.ravel()
 
 # def run_M2N2(data_train, data_test, epochs=10, win_size=12, lr=1e-3, batch_size=128):
-def run_M2N2(data_train, data_test, epochs=10, win_size=20, lr=1e-4, batch_size=128,gamma=0.95):
+def run_M2N2(data_train, data_test, epochs=10, win_size=20, lr=1e-4, batch_size=128,gamma=0.95, **kwargs):
     from ..models.M2N2 import M2N2
     clf = M2N2(win_size=win_size, num_channels=data_test.shape[1], lr=lr, batch_size=batch_size, epochs=epochs, gamma=gamma,latent_dim=64,stride=win_size//2)
     clf.fit(data_train)
@@ -500,7 +537,7 @@ def run_M2N2(data_train, data_test, epochs=10, win_size=20, lr=1e-4, batch_size=
 
 
 def run_DualTF(data_train, data_test, win_size=36, nest_length=None,
-               lr=1e-4, batch_size=16,
+               lr=1e-4, batch_size=16, **kwargs
                ):
     from ..models.DualTF import FreqReconstructor,TimeReconstructor
     configs = {
