@@ -7,9 +7,15 @@ import os
 os.chdir(cur_proj)
 print('Current working directory: ', os.getcwd())
 
-model_list = ['OCSVM', 'AutoEncoder', 'CNN', 'LSTMAD', 'TranAD', 'USAD', 'OmniAnomaly', 
+# model_list = ['OCSVM', 'AutoEncoder', 'CNN', 'LSTMAD', 'TranAD', 'USAD', 'OmniAnomaly', 
+                        # 'AnomalyTransformer', 'TimesNet']
+# model_list = ['AutoEncoder', 'CNN', 'LSTMAD', 'USAD', 'OmniAnomaly', 
+#                         'AnomalyTransformer', 'TimesNet']
+model_list = ['USAD', 'OmniAnomaly', 
                         'AnomalyTransformer', 'TimesNet']
-dataset_list = ['PSM', 'SWAT', 'WADI', 'NIPS_TS_Swan', 'NIPS_TS_Water', 'UCR']
+model_list = ['TimesNet']
+dataset_list = ['PSM', 'SWAT', 'WADI', 'NIPS_TS_Swan', 'NIPS_TS_Water']# 'UCR']
+
 
 import subprocess
 
@@ -20,7 +26,7 @@ def run_baselines():
                 index_range = range(1, 251)
                 for idx in index_range:
                     print(f'Running experiment for model: {model}, dataset: {dataset} with index: {idx}')
-                    cmd = ['python', 'semisupervised.py', '--model_name', model, '--dataset_name', dataset, '--index', int(idx), 
+                    cmd = ['python', 'semisupervised.py', '--model_name', model, '--dataset_name', dataset, '--index', str(idx), 
                            '--task_name', 'semisupervised']
                     handle = subprocess.run(cmd)
                     if handle.returncode != 0:

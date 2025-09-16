@@ -8,7 +8,7 @@ os.chdir(cur_proj)
 print('Current working directory: ', os.getcwd())
 
 model_list = ['IForest', 'LOF', 'POLY', 'MatrixProfile', 'PCA', 'HBOS', 'KNN', 'KMeansAD', 'KShapeAD', 'Random']
-dataset_list = ['PSM', 'SWAT', 'WADI', 'NIPS_TS_Swan', 'NIPS_TS_Water', 'UCR']
+dataset_list = ['PSM', 'SWAT', 'WADI', 'NIPS_TS_Swan', 'NIPS_TS_Water']#, 'UCR']
 
 import subprocess
 
@@ -19,7 +19,7 @@ def run_baselines():
                 index_range = range(1, 251)
                 for idx in index_range:
                     print(f'Running experiment for model: {model}, dataset: {dataset} with index: {idx}')
-                    cmd = ['python', 'unsupervised.py', '--model_name', model, '--dataset_name', dataset, '--index', int(idx), 
+                    cmd = ['python', 'unsupervised.py', '--model_name', model, '--dataset_name', dataset, '--index', str(idx), 
                            '--task_name', 'unsupervised']
                     handle = subprocess.run(cmd)
                     if handle.returncode != 0:

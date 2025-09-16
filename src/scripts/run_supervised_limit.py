@@ -22,11 +22,11 @@ def run_baselines(anomaly_ratio=0.1):
             if handle.returncode != 0:
                 raise RuntimeError(f'Error occurred while running {model} on {dataset}')
 
-def run_stand(anomaly_ratio=0.1):
+def run_stand(anomaly_ratio=0.1, win_size=32):
     for dataset in dataset_list:
         print(f'Running experiment for model: STAND, dataset: {dataset}')
         cmd = ['python', 'supervised.py', '--model_name', 'STAND', '--dataset_name', dataset, '--task_name', 'supervised_limit',
-                '--anomaly_ratio', anomaly_ratio]
+                '--anomaly_ratio', anomaly_ratio, '--win_size', win_size]
         subprocess.run(cmd)
 
 if __name__ == '__main__':
