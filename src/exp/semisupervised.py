@@ -39,6 +39,8 @@ result1 = config_dict.copy()
 assert config.model_name in Semisupervise_AD_Pool, f"Model {config.model_name} not in {Semisupervise_AD_Pool}"
 config_dict_tmp = config_dict.copy()
 config_dict_tmp.pop('model_name')
+config_dict_tmp.pop('lr')
+config_dict_tmp.pop('win_size')
 test_score = run_Semisupervise_AD(config.model_name, train_y, test_y, **config_dict_tmp)
 
 

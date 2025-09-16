@@ -172,7 +172,7 @@ def run_Sub_IForest(data, periodicity=1, n_estimators=100, max_features=1, n_job
     score = clf.decision_scores_
     return score.ravel()
 
-def run_IForest(data, slidingWindow=100, n_estimators=100, max_features=1, n_jobs=1, **kwargs):
+def run_IForest(data, slidingWindow=3, n_estimators=100, max_features=1, n_jobs=1, **kwargs):
     from ..models.IForest import IForest
     clf = IForest(slidingWindow=slidingWindow, n_estimators=n_estimators, max_features=max_features, n_jobs=n_jobs)
     clf.fit(data)
@@ -460,6 +460,7 @@ def run_Donut(data_train, data_test, win_size=120, lr=1e-4, batch_size=128, **kw
 
 def run_TimesNet(data_train, data_test, win_size=96, lr=1e-4, **kwargs):
     from ..models.TimesNet import TimesNet
+    print(f'TimesNet {win_size=}, {lr=}')
     clf = TimesNet(win_size=win_size, enc_in=data_test.shape[1], lr=lr, epochs=50)
     clf.fit(data_train)
     score = clf.decision_function(data_test)
