@@ -55,6 +55,8 @@ while True:
         break
     else:
         cnt += 1
+        if config.quantile - 0.05*cnt < 0:
+            raise ValueError(f'Quantile adjustment out of range!, model: {config.model_name}, dataset: {config.dataset_name}, index: {config.index}')
         result1['quantile'] = config.quantile - 0.05*cnt
         print('Adjust quantile to: ', config.quantile - 0.05*cnt)
 

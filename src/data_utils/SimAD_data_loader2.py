@@ -446,11 +446,11 @@ class NIPS_TS_SwanSegLoader(GetDataset):
 
 
 class WADI_SegLoader(GetDataset):
-    def __init__(self, data_path, win_size, step, mode="train", ignore=(102,), scaler=False):
+    def __init__(self, data_path, win_size, step, mode="train", ignore=(102,), scaler=True):
         self.mode = mode
         self.step = step
         self.win_size = win_size
-        self.scaler = MinMaxScaler()
+        self.scaler = StandardScaler()
         data = np.load(data_path + "/WADI_train.npy")
         test_data = np.load(data_path + "/WADI_test.npy")
         
@@ -878,8 +878,10 @@ class SupervisedDataset(Dataset):
         self.test_y = self.scaler.transform(self.test_y)
         self.all_test_y = np.concatenate([self.train_y, self.test_y], axis=0)
         self.all_test_labels = np.concatenate([self.train_labels, self.test_labels], axis=0)
-        self.train = self.train_y = self.train_y.astype(np.float32)
-        self.test = self.test_y = self.test_y.astype(np.float32)
+        self.train = self.train_y.astype(np.float32)
+        self.train_y = self.train
+        self.test = self.test_y.astype(np.float32)
+        self.test_y = self.test
         self.test_labels = self.test_labels.astype(np.float32)
         self.train_labels = self.train_labels.astype(np.float32)
         

@@ -127,9 +127,9 @@ def run_ExtraTrees_S(data_train, data_train_labels, data_test, data_all_test=Non
     else:
         return score.ravel()
 
-def run_LightGBM_S(data_train, data_train_labels, data_test, data_all_test=None, win_size=3, n_estimators=100, **kwargs):
+def run_LightGBM_S(data_train, data_train_labels, data_test, data_all_test=None, win_size=3, **kwargs):
     from ..models.supervised import LightGBM
-    clf = LightGBM(win_size=win_size, n_estimators=n_estimators)
+    clf = LightGBM(win_size=win_size)
     clf.fit(data_train, data_train_labels)
     score = clf.decision_function(data_test)
     if data_all_test is not None:
