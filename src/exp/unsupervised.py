@@ -45,6 +45,7 @@ test_score = run_Unsupervise_AD(config.model_name, test_y, **config_dict_tmp)
 cnt = 0
 while True:
     test_pred = metricor.get_pred(test_score, quantile=config.quantile)
+    print(sum(test_pred))
     if sum(test_pred) >= 0:
         break
     else:
