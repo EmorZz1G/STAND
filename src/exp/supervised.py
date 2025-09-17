@@ -50,7 +50,7 @@ test_score, test_all_score = run_Supervise_AD(config.model_name, train_y, train_
 
 cnt = 0
 while True:
-    test_pred = metricor.get_pred(test_score, quantile=config.quantile)
+    test_pred = metricor.get_pred(test_score, quantile=config.quantile - 0.05*cnt)
     if sum(test_pred) > 0:
         break
     else:
