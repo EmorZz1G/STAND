@@ -204,7 +204,7 @@ def run_POLY(data, periodicity=1, power=3, n_jobs=1, **kwargs):
 
 def run_MatrixProfile(data, periodicity=1, n_jobs=1, **kwargs):
     from ..models.MatrixProfile import MatrixProfile
-    slidingWindow = find_length_rank(data, rank=periodicity)
+    slidingWindow = max(find_length_rank(data, rank=periodicity),10)
     clf = MatrixProfile(window=slidingWindow)
     clf.fit(data)
     score = clf.decision_scores_
