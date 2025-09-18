@@ -1,0 +1,20 @@
+Config: --------------------------------
+Namespace(d_model=32, num_layers=1, bidirectional=0, model_name='SVM', task_name='supervised', win_size=3, step_size=1, batch_size=128, epochs=10, lr=0.001, model_saving_path='/share/home/202220143416/project/STAND/model_saving', dataset_path='/share/home/202220143416/project/FTSAD/datasets', dataset_name='PSM', if_save=0, index=0, train_test_split=0.2, anomaly_ratio=0.1, train_split_max=0.3, metric_list=['CCE', 'F1', 'Aff-F1', 'UAff-F1', 'AUC-ROC', 'VUS-PR'], quantile=0.95)
+Log will be saved to:  /share/home/202220143416/project/STAND/logs
+train: (132481, 25)
+test: (87841, 25)
+(17568, 25) (17568,)
+(17566, 75) (17566,)
+Metric: CCE, Test: 0.0674, All Test: 0.1150
+Metric: F1, Test: 0.0298, All Test: 0.1276
+Metric: Aff-F1, Test: 0.4327, All Test: 0.5543
+[Info]: Unbiased_Aff_prec_bias is not set. Calculate by sample bias. The time-cost will be higher than setting it manually. You can set it by calling `cal_unbiased_aff_prec_bias` function.
+[Info]: Unbiased_Aff_prec_bias is set to 0.5358 by sampling 3 times.
+[Info]: Unbiased_Aff_prec_bias sampling results: [0.5166, 0.5386, 0.5523]
+[Info]: Unbiased_Aff_prec_bias is not set. Calculate by sample bias. The time-cost will be higher than setting it manually. You can set it by calling `cal_unbiased_aff_prec_bias` function.
+[Info]: Unbiased_Aff_prec_bias is set to 0.5385 by sampling 3 times.
+[Info]: Unbiased_Aff_prec_bias sampling results: [0.5264, 0.5346, 0.5544]
+Metric: UAff-F1, Test: 0.2095, All Test: 0.4611
+Metric: AUC-ROC, Test: 0.6302, All Test: 0.7257
+Metric: VUS-PR, Test: 0.4353, All Test: 0.4878
+Result saved to:  /share/home/202220143416/project/STAND/logs/supervised_exp.csv

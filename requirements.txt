@@ -12,3 +12,4 @@ deprecated>=1.2.0
 cce
 tslearn
 stumpy
+arch

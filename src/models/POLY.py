@@ -55,7 +55,7 @@ class POLY(BaseDetector):
     """
     def __init__(self, power = 1, window = 200, neighborhood = None, contamination = 0.1, normalize=True):
         self.power = power
-        self.window = window
+        self.window = window or 200
         self.avg_window = None
         if neighborhood == None:
             self.neighborhood = max(10*window, 100)
@@ -101,6 +101,7 @@ class POLY(BaseDetector):
             self.neighborhood = len(X)
         
         neighborhood = self.neighborhood
+        print("POLY fitting with window: ", window, ", neighborhood: ", neighborhood, ", power: ", self.power)
                                           
         N = math.floor(self.n_train_ / window)
         M = math.ceil(self.n_initial_ / window)
