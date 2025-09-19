@@ -47,7 +47,7 @@ test_score = run_Semisupervise_AD(config.model_name, train_y, test_y, **config_d
 cnt = 0
 while True:
     test_pred = metricor.get_pred(test_score, quantile=config.quantile)
-    if sum(test_pred) >= 0:
+    if sum(test_pred) > 0:
         break
     else:
         cnt += 1

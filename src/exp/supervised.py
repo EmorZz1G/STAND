@@ -63,7 +63,7 @@ while True:
 cnt = 0
 while True:
     test_all_pred = metricor.get_pred(test_all_score, quantile=config.quantile - 0.05*cnt)
-    if sum(test_all_pred) >= 0:
+    if sum(test_all_pred) > 0:
         break
     else:
         cnt += 1
