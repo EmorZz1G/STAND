@@ -87,7 +87,11 @@ if __name__ == '__main__':
             for train_test_split, win_size, d_model, num_layers, bidirectional in task_list_generator:
                 print(f'Submitting STAND with train_test_split: {train_test_split}, win_size: {win_size}, d_model: {d_model}, num_layers: {num_layers}, bidirectional: {bidirectional}')
                 futures.append(executor.submit(run_stand, dataset_list, train_test_split, win_size, d_model, num_layers, bidirectional))
+
+            completed = 0
             for future in concurrent.futures.as_completed(futures):
+                completed += 1
+                print(f"\033[34m已完成任务数: {completed}/{total}\033[0m")
                 try:
                     future.result()
                 except Exception as e:
