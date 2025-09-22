@@ -80,7 +80,6 @@ for metric in config.metric_list:
     print(f"Metric: {metric}, Test: {val1:.4f}, All Test: {val2:.4f}")
 
 import pandas as pd
-import pandas as pd
 df = pd.DataFrame([result1])
 df2 = pd.DataFrame([result2])
 if not logs_file_pth.exists():

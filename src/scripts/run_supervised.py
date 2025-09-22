@@ -11,8 +11,9 @@ print('Current working directory: ', os.getcwd())
 model_list = ['RF', 'SVM', 'AdaBoost', 'ExtraTrees', 'LightGBM']
 # model_list = ['SVM', 'AdaBoost', 'ExtraTrees', 'LightGBM']
 # model_list = ['ExtraTrees', 'LightGBM']
-# model_list = ['LightGBM']
-dataset_list = ['PSM', 'SWAT', 'WADI', 'NIPS_TS_Swan', 'NIPS_TS_Water']#, 'UCR']
+model_list = ['LightGBM']
+# dataset_list = ['PSM', 'SWAT', 'WADI', 'NIPS_TS_Swan', 'NIPS_TS_Water']#, 'UCR']
+dataset_list = ['SWAT']#, 'WADI', 'NIPS_TS_Swan', 'NIPS_TS_Water']#, 'UCR']
 # dataset_list = ['SWAT', 'WADI', 'NIPS_TS_Swan', 'NIPS_TS_Water']#, 'UCR']
 # dataset_list = ['WADI', 'NIPS_TS_Swan', 'NIPS_TS_Water']#, 'UCR']
 
@@ -78,7 +79,8 @@ def run_stand(dataset_list, train_test_split=0.5, win_size=32):
 if __name__ == '__main__':
     # train_test_split_list = [0.1, 0.2, 0.3, 0.4, 0.5]
     # train_test_split_list = [0.2, 0.3, 0.4, 0.5]
-    train_test_split_list = [0.3, 0.4, 0.5]
+    # train_test_split_list = [0.3, 0.4, 0.5]
+    train_test_split_list = [0.5]
     run_task = 0
     for train_test_split in train_test_split_list:
         if run_task == 0:

@@ -6,6 +6,7 @@ print(config)
 
 assert config.task_name == 'semisupervised', 'This script only supports semisupervised task!'
 import pathlib
+import numpy as np
 
 proj_pth = pathlib.Path(__file__).parent.parent.parent
 logs_pth = proj_pth / 'logs'
@@ -42,11 +43,15 @@ config_dict_tmp.pop('model_name')
 config_dict_tmp.pop('lr')
 config_dict_tmp.pop('win_size')
 test_score = run_Semisupervise_AD(config.model_name, train_y, test_y, **config_dict_tmp)
+# 计算数组中非NaN值的均值
+mean_value = np.nanmean(test_score)
+# 用均值填充NaN值
+test_score[np.isnan(test_score)] = mean_value
 
 
 cnt = 0
 while True:
-    test_pred = metricor.get_pred(test_score, quantile=config.quantile)
+    test_pred = metricor.get_pred(test_score, quantile=config.quantile - 0.05*cnt)
     if sum(test_pred) > 0:
         break
     else:
