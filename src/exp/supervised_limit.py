@@ -51,18 +51,20 @@ test_score, test_all_score = run_Supervise_AD(config.model_name, train_y, train_
 
 cnt = 0
 while True:
-    test_pred = metricor.get_pred(test_score, quantile=config.quantile)
+    test_pred = metricor.get_pred(test_score, quantile=config.quantile - 0.05*cnt)
     if sum(test_pred) > 0:
         break
     else:
         cnt += 1
+        if config.quantile - 0.05*cnt < 0:
+            raise ValueError(f'Quantile adjustment out of range!, model: {config.model_name}, dataset: {config.dataset_name}, index: {config.index}')
         result1['quantile'] = config.quantile - 0.05*cnt
         print('Adjust quantile to: ', config.quantile - 0.05*cnt)
 
 cnt = 0
 while True:
     test_all_pred = metricor.get_pred(test_all_score, quantile=config.quantile - 0.05*cnt)
-    if sum(test_all_pred) >= 0:
+    if sum(test_all_pred) > 0:
         break
     else:
         cnt += 1

@@ -24,7 +24,8 @@ class _StandNet(nn.Module):
     def __init__(self, input_dim, d_model=32, num_layers=1, bidirectional=False, use_embedding=True):
         super(_StandNet, self).__init__()
         if not use_embedding:
-            d_model = input_dim
+            self.emb = nn.Identity()
+            d_model_in = input_dim
         else:
             self.emb = nn.Sequential(
                 nn.Linear(input_dim, d_model),
@@ -34,12 +35,16 @@ class _StandNet(nn.Module):
                 nn.GELU(),
                 nn.LayerNorm(d_model),
             )
+            d_model_in = d_model
+        self.bidirectional = bidirectional
         self.num_layers = num_layers
         if num_layers == 0:
             self.enc = nn.Identity()
+            proj_in = d_model_in
         else:
-            self.enc = nn.LSTM(d_model, d_model, num_layers, batch_first=True, bidirectional=bidirectional)
-        proj_in = d_model * (2 if bidirectional else 1)
+            assert num_layers > 0
+            self.enc = nn.LSTM(d_model_in, d_model, num_layers, batch_first=True, bidirectional=(bidirectional==1 or bidirectional==True))
+            proj_in = d_model * (2 if bidirectional==True or bidirectional==1 else 1)
         self.clf = nn.Linear(proj_in, 1)
 
     def forward(self, x):
@@ -79,16 +84,13 @@ class STAND(BaseDetector):
         'cuda' or 'cpu'. If None, auto-detect.
     """
 
-    def __init__(self, slidingWindow=32, sub=True, contamination=0.1, normalize=False,
+    def __init__(self, win_size=32, contamination=0.1, normalize=False,
                  epochs=10, batch_size=128, lr=1e-3, optimizer='adam',
                  d_model=32, num_layers=1, bidirectional=False, device=None,
                  debug=0,
                  **kwargs):
 
-        self.slidingWindow = slidingWindow
-        self.sub = sub
-        self.normalize = normalize
-
+        self.win_size = win_size
         self.epochs = epochs
         self.batch_size = batch_size
         self.lr = lr
@@ -96,6 +98,8 @@ class STAND(BaseDetector):
         self.d_model = d_model
         self.num_layers = num_layers
         self.bidirectional = bidirectional
+        self.normalize = normalize
+        self.contamination = contamination  # not used in supervised setting
         self.device = device or ('cuda' if torch.cuda.is_available() else 'cpu')
 
         self._model = None
@@ -206,20 +210,19 @@ class STAND(BaseDetector):
         self.fit_on_loader=2
         n_samples, feature_dim = X.shape
 
-        Xw = Window(window=self.slidingWindow).convert(X)
-        yw = Window(window=self.slidingWindow).convert(y)
+        Xw = Window(window=self.win_size).convert(X)
+        yw = Window(window=self.win_size).convert(y)
         if self.normalize:
             Xw = zscore(Xw, axis=1, ddof=1)
 
         Xw = check_array(Xw)
 
         # In STAND, reshape features back to [N, win, dim] assuming original dim=1 per time step.
-        win = self.slidingWindow
+        win = self.win_size
         X_seq = Xw.reshape(-1, win, feature_dim)
 
         # Ensure labels are float in [0,1] with shape [N, win]
         y_seq = yw.reshape(-1, win)
-        print(X_seq.shape,y_seq.shape)
 
         dataset = TensorDataset(
             torch.tensor(X_seq, dtype=torch.float32),
@@ -282,9 +285,9 @@ class STAND(BaseDetector):
         # self.decision_scores_ = scores
         # if self.decision_scores_.shape[0] < n_samples:
         #     self.decision_scores_ = np.array(
-        #         [self.decision_scores_[0]] * math.ceil((self.slidingWindow - 1) / 2)
+        #         [self.decision_scores_[0]] * math.ceil((self.win_size - 1) / 2)
         #         + list(self.decision_scores_)
-        #         + [self.decision_scores_[-1]] * ((self.slidingWindow - 1) // 2)
+        #         + [self.decision_scores_[-1]] * ((self.win_size - 1) // 2)
         #     )
 
         return self
@@ -303,7 +306,7 @@ class STAND(BaseDetector):
         logits over the window; we take the sigmoid and then average across
         the window to get a single score per window.
         """
-        win = self.slidingWindow
+        win = self.win_size
 
         # Non-overlapping windows for window-level scores
         Xw = Window(window=win, stride=win).convert(X)

@@ -11,24 +11,10 @@ print('Current working directory: ', os.getcwd())
 model_list = ['RF', 'SVM', 'AdaBoost', 'ExtraTrees', 'LightGBM']
 # model_list = ['SVM', 'AdaBoost', 'ExtraTrees', 'LightGBM']
 # model_list = ['ExtraTrees', 'LightGBM']
-model_list = ['LightGBM']
-# dataset_list = ['PSM', 'SWAT', 'WADI', 'NIPS_TS_Swan', 'NIPS_TS_Water']#, 'UCR']
-dataset_list = ['SWAT']#, 'WADI', 'NIPS_TS_Swan', 'NIPS_TS_Water']#, 'UCR']
+# model_list = ['LightGBM']
+dataset_list = ['PSM', 'SWAT', 'WADI', 'NIPS_TS_Swan', 'NIPS_TS_Water']#, 'UCR']
 # dataset_list = ['SWAT', 'WADI', 'NIPS_TS_Swan', 'NIPS_TS_Water']#, 'UCR']
 # dataset_list = ['WADI', 'NIPS_TS_Swan', 'NIPS_TS_Water']#, 'UCR']
-
-task_list = [
-    # {
-    #     'model_list': ["KNN"],
-    #     'dataset_list': ['NIPS_TS_Water'],
-    #     'extra_config': {'KNN': {'win_size': 1}}
-    # },
-    {
-        'model_list': ["LR"],
-        'dataset_list': ['NIPS_TS_Swan', 'NIPS_TS_Water'],
-        'extra_config': {"LR": {'win_size': 2}, "RF": {'win_size': 1}}
-    }
-]
 
 import subprocess
 
@@ -60,36 +46,53 @@ def run_baselines(model_list, dataset_list, extra_config, train_test_split=0.5):
                 if handle.returncode != 0:
                     raise RuntimeError(f'Error occurred while running {model} on {dataset}')
 
-def run_stand(dataset_list, train_test_split=0.5, win_size=32):
+def run_stand(dataset_list, train_test_split=0.5, win_size=32, d_model=32, num_layers=1, bidirectional=0):
     for dataset in dataset_list:
         if dataset == 'UCR':
             index_range = range(1, 251)
             for idx in index_range:
                 print(f'Running experiment for model: STAND, dataset: {dataset} with index: {idx}')
                 cmd = ['python', 'supervised.py', '--model_name', 'STAND', '--dataset_name', dataset, '--index', str(idx),
-                       '--task_name', 'supervised', '--train_test_split', str(train_test_split), '--win_size', str(win_size)]
+                       '--task_name', 'supervised', '--train_test_split', str(train_test_split), '--win_size', str(win_size),
+                       '--d_model', str(d_model), '--num_layers', str(num_layers), '--bidirectional', str(bidirectional)]
                 subprocess.run(cmd)
         else:
             print(f'Running experiment for model: STAND, dataset: {dataset}')
             cmd = ['python', 'supervised.py', '--model_name', 'STAND', '--dataset_name', dataset,
                    '--task_name', 'supervised',
-                   '--train_test_split', str(train_test_split), '--win_size', str(win_size)]
+                   '--train_test_split', str(train_test_split), '--win_size', str(win_size),
+                   '--d_model', str(d_model), '--num_layers', str(num_layers), '--bidirectional', str(bidirectional)]
             subprocess.run(cmd)
 
 if __name__ == '__main__':
     # train_test_split_list = [0.1, 0.2, 0.3, 0.4, 0.5]
     # train_test_split_list = [0.2, 0.3, 0.4, 0.5]
-    # train_test_split_list = [0.3, 0.4, 0.5]
     train_test_split_list = [0.5]
-    run_task = 0
-    for train_test_split in train_test_split_list:
-        if run_task == 0:
-            run_baselines(model_list, dataset_list, extra_config, train_test_split)
-            # run_stand(dataset_list, train_test_split)
-        else:
-            for task in task_list:
-                model_list_ = task['model_list']
-                dataset_list_ = task['dataset_list']
-                extra_config_ = task.get('extra_config', extra_config)
-                run_baselines(model_list_, dataset_list_, extra_config_, train_test_split)
-                # run_stand(dataset_list_, train_test_split)
+    win_size_list = [32,64,128]
+    d_model_list = [16,32,64,128,256]
+    num_layers_list = [0,1,2,3]
+    bidirectional_list = [0,1]
+    from itertools import product
+    task_list_generator = product(train_test_split_list, win_size_list, d_model_list, num_layers_list, bidirectional_list)
+    task_list_generator = list(task_list_generator)
+    parallel_jobs = 10
+    if parallel_jobs == 0:
+        for train_test_split, win_size, d_model, num_layers, bidirectional in task_list_generator:
+            print(f'Running STAND with train_test_split: {train_test_split}, win_size: {win_size}, d_model: {d_model}, num_layers: {num_layers}, bidirectional: {bidirectional}')
+            run_stand(dataset_list, train_test_split, win_size, d_model, num_layers, bidirectional)
+    elif parallel_jobs > 0:
+        import concurrent.futures
+        with concurrent.futures.ThreadPoolExecutor(max_workers=parallel_jobs) as executor:
+            futures = []
+            for train_test_split, win_size, d_model, num_layers, bidirectional in task_list_generator:
+                print(f'Submitting STAND with train_test_split: {train_test_split}, win_size: {win_size}, d_model: {d_model}, num_layers: {num_layers}, bidirectional: {bidirectional}')
+                futures.append(executor.submit(run_stand, dataset_list, train_test_split, win_size, d_model, num_layers, bidirectional))
+            for future in concurrent.futures.as_completed(futures):
+                try:
+                    future.result()
+                except Exception as e:
+                    print(f'Error occurred during execution: {e}')
+    elif parallel_jobs == -1:
+        train_test_split, win_size, d_model, num_layers, bidirectional = 0.5, 32, 32, 1, 0
+        print(f'Running STAND with train_test_split: {train_test_split}, win_size: {win_size}, d_model: {d_model}, num_layers: {num_layers}, bidirectional: {bidirectional}')
+        run_stand(dataset_list, train_test_split, win_size, d_model, num_layers, bidirectional)

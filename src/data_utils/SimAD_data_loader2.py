@@ -926,8 +926,8 @@ class RandomSupervisedDataset(Dataset):
         # torch.manual_seed(seed)
         # random.seed(seed)
         # 找到索引i，使得 sum(data_labels[:i])/i >= anomaly_ratio
-        idx = len(data_labels.shape[0] * anomaly_ratio)
-        train_idx_max = int(len(data_y) * train_split_max)
+        idx = int(data_labels.shape[0] * anomaly_ratio)
+        train_idx_max = int(data_y.shape[0] * train_split_max)
         while data_labels[:idx].sum() / idx < anomaly_ratio and idx < train_idx_max:
             idx += 1
         self.train_anomaly_ratio = train_anomaly_ratio = data_labels[:idx].sum() / idx

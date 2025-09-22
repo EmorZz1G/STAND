@@ -13,3 +13,4 @@ cce
 tslearn
 stumpy
 arch
+hurst
