@@ -47,6 +47,12 @@ def run_baselines(model_list, dataset_list, extra_config, train_test_split=0.5):
                     raise RuntimeError(f'Error occurred while running {model} on {dataset}')
 
 def run_stand(dataset_list, train_test_split=0.5, win_size=32, d_model=32, num_layers=1, bidirectional=0):
+    if isinstance(dataset_list, str):
+        dataset_list = [dataset_list]
+    elif isinstance(dataset_list, list):
+        print(f'Running STAND on datasets: {dataset_list}')
+    else:
+        raise ValueError('dataset_list should be a string or a list of strings.')
     for dataset in dataset_list:
         if dataset == 'UCR':
             index_range = range(1, 251)
@@ -73,21 +79,41 @@ if __name__ == '__main__':
     num_layers_list = [0,1,2,3]
     bidirectional_list = [0,1]
     from itertools import product
-    task_list_generator = product(train_test_split_list, win_size_list, d_model_list, num_layers_list, bidirectional_list)
+    # task_list_generator = product(train_test_split_list, win_size_list, d_model_list, num_layers_list, bidirectional_list)
+    task_list_generator = product(dataset_list, train_test_split_list, win_size_list, d_model_list, num_layers_list, bidirectional_list)
     task_list_generator = list(task_list_generator)
     parallel_jobs = 10
+
+    exp_log_pth = pathlib.Path(__file__).parent.parent.parent / 'logs' / 'supervised_exp.csv'
+    if not exp_log_pth.exists():
+        print(f'Log file {exp_log_pth} does not exist. Please run baselines first.')
+        raise FileNotFoundError(f'Log file {exp_log_pth} does not exist. Please run baselines first.')
+    import pandas as pd
+    exp_log = pd.read_csv(exp_log_pth)
+    completed_tasks = set()
+    for _, row in exp_log.iterrows():
+        if row['model_name'] == 'STAND':
+            completed_tasks.add((row['dataset_name'], row['train_test_split'], row['win_size'], row['d_model'], row['num_layers'], row['bidirectional']))
     if parallel_jobs == 0:
-        for train_test_split, win_size, d_model, num_layers, bidirectional in task_list_generator:
+        for dataset_name, train_test_split, win_size, d_model, num_layers, bidirectional in task_list_generator:
+            if (dataset_name, train_test_split, win_size, d_model, num_layers, bidirectional) in completed_tasks:
+                print(f"Skipping completed task: {train_test_split}, {win_size}, {d_model}, {num_layers}, {bidirectional}")
+                continue
             print(f'Running STAND with train_test_split: {train_test_split}, win_size: {win_size}, d_model: {d_model}, num_layers: {num_layers}, bidirectional: {bidirectional}')
-            run_stand(dataset_list, train_test_split, win_size, d_model, num_layers, bidirectional)
+            # run_stand(dataset_list, train_test_split, win_size, d_model, num_layers, bidirectional)
+            run_stand(dataset_name, train_test_split, win_size, d_model, num_layers, bidirectional)
     elif parallel_jobs > 0:
         import concurrent.futures
         with concurrent.futures.ThreadPoolExecutor(max_workers=parallel_jobs) as executor:
             futures = []
-            for train_test_split, win_size, d_model, num_layers, bidirectional in task_list_generator:
+            for dataset_name, train_test_split, win_size, d_model, num_layers, bidirectional in task_list_generator:
+                if (dataset_name, train_test_split, win_size, d_model, num_layers, bidirectional) in completed_tasks:
+                    print(f"Skipping completed task: {dataset_name}, {train_test_split}, {win_size}, {d_model}, {num_layers}, {bidirectional}")
+                    continue
                 print(f'Submitting STAND with train_test_split: {train_test_split}, win_size: {win_size}, d_model: {d_model}, num_layers: {num_layers}, bidirectional: {bidirectional}')
-                futures.append(executor.submit(run_stand, dataset_list, train_test_split, win_size, d_model, num_layers, bidirectional))
-
+                # futures.append(executor.submit(run_stand, dataset_list, train_test_split, win_size, d_model, num_layers, bidirectional))
+                futures.append(executor.submit(run_stand, dataset_name, train_test_split, win_size, d_model, num_layers, bidirectional))
+            total = len(futures)
             completed = 0
             for future in concurrent.futures.as_completed(futures):
                 completed += 1
