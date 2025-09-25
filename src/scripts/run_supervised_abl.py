@@ -82,7 +82,7 @@ if __name__ == '__main__':
     # task_list_generator = product(train_test_split_list, win_size_list, d_model_list, num_layers_list, bidirectional_list)
     task_list_generator = product(dataset_list, train_test_split_list, win_size_list, d_model_list, num_layers_list, bidirectional_list)
     task_list_generator = list(task_list_generator)
-    parallel_jobs = 10
+    parallel_jobs = 5
 
     exp_log_pth = pathlib.Path(__file__).parent.parent.parent / 'logs' / 'supervised_exp.csv'
     if not exp_log_pth.exists():
