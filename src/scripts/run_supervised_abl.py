@@ -85,7 +85,7 @@ if __name__ == '__main__':
     # 打乱
     import random
     random.shuffle(task_list_generator)
-    parallel_jobs = 0
+    parallel_jobs = 3
 
     exp_log_pth = pathlib.Path(__file__).parent.parent.parent / 'logs' / 'supervised_exp.csv'
     if not exp_log_pth.exists():
