@@ -3,6 +3,11 @@ __pycache__/
 *.py[codz]
 *$py.class
 
+
+post
+
+logs/post
+
 # C extensions
 *.so
 /.vscode
