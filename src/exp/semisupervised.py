@@ -51,7 +51,7 @@ test_score[np.isnan(test_score)] = mean_value
 
 cnt = 0
 while True:
-    test_pred = metricor.get_pred(test_score, quantile=config.quantile - 0.05*cnt)
+    test_pred = metricor.get_pred(test_score, quantile=config.quantile - 0.05*cnt).astype(int)
     if sum(test_pred) > 0:
         break
     else:
@@ -62,6 +62,7 @@ while True:
         print('Adjust quantile to: ', config.quantile - 0.05*cnt)
 
 for metric in config.metric_list:
+    print(test_labels.shape, test_score.shape, test_pred.shape)
     val1 = metricor.metric_by_name(metric, test_labels, test_score, test_pred)
     result1[metric] = val1
     print(f'{metric}: {val1:.4f}')

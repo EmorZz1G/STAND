@@ -8,7 +8,8 @@ os.chdir(cur_proj)
 print('Current working directory: ', os.getcwd())
 
 # model_list = ['KNN', 'LR', 'RF', 'SVM', 'AdaBoost', 'ExtraTrees', 'LightGBM']
-model_list = ['RF', 'SVM', 'AdaBoost', 'ExtraTrees', 'LightGBM']
+model_list = ['RF']#, 'SVM', 'AdaBoost', 'ExtraTrees', 'LightGBM']
+# model_list = ['SVM', 'AdaBoost', 'ExtraTrees', 'LightGBM']
 # dataset_list = ['PSM', 'SWAT', 'WADI', 'NIPS_TS_Swan', 'NIPS_TS_Water']
 # dataset_list = ['PSM']
 dataset_list = ['NIPS_TS_Swan']
@@ -36,7 +37,8 @@ def run_stand(anomaly_ratio=0.1, win_size=32):
 
 if __name__ == '__main__':
     # anomaly_ratio_list = [0.1, 0.2, 0.3, 0.4, 0.5]
-    anomaly_ratio_list = [0.1, 0.2]#, 0.3, 0.4, 0.5]
+    # anomaly_ratio_list = [0.1, 0.2]#, 0.3, 0.4, 0.5]
+    anomaly_ratio_list = [0.2]#, 0.3, 0.4, 0.5]
     for anomaly_ratio in anomaly_ratio_list:
         run_baselines(anomaly_ratio)
         # run_stand(anomaly_ratio)
