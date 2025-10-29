@@ -19,7 +19,7 @@ Unsupervise_AD_Pool = ['IForest', 'LOF', 'POLY', 'MatrixProfile', 'PCA', 'HBOS',
 #                         'AnomalyTransformer', 'TimesNet', 'FITS', 'Donut', 'OFA', 'MOMENT_FT', 'M2N2', 'DualTF']
 
 Semisupervise_AD_Pool = ['OCSVM', 'AutoEncoder', 'CNN', 'LSTMAD', 'TranAD', 'USAD', 'OmniAnomaly', 
-                        'AnomalyTransformer', 'TimesNet']
+                        'AnomalyTransformer', 'TimesNet', 'M2N2', 'LFTSAD', 'CATCH']
 
 Supervise_AD_Pool = ['KNN', 'LR', 'RF', 'SVM', 'STAND', 'AdaBoost', 'ExtraTrees', 'LightGBM']
 
@@ -140,7 +140,7 @@ def run_LightGBM_S(data_train, data_train_labels, data_test, data_all_test=None,
 
 def run_STAND_S(data_train, data_train_labels, data_test,  data_all_test=None, win_size=32, d_model=32, num_layers=1, bidirectional=False, epochs=10, batch_size=128, lr=1e-3, **kwargs):
     from ..models.supervised import STAND
-    clf = STAND(win_size=win_size, d_model=d_model, num_layers=num_layers, bidirectional=bidirectional, epochs=epochs, batch_size=batch_size, lr=lr)
+    clf = STAND(win_size=win_size, d_model=d_model, num_layers=num_layers, bidirectional=bidirectional, epochs=epochs, batch_size=batch_size, lr=lr, **kwargs)
     clf.fit(data_train, data_train_labels)
     score = clf.decision_function(data_test)
     if data_all_test is not None:
@@ -527,7 +527,6 @@ def run_MOMENT_FT(data_train, data_test, win_size=256, **kwargs):
     del clf
     return score.ravel()
 
-# def run_M2N2(data_train, data_test, epochs=10, win_size=12, lr=1e-3, batch_size=128):
 def run_M2N2(data_train, data_test, epochs=10, win_size=20, lr=1e-4, batch_size=128,gamma=0.95, **kwargs):
     from ..models.M2N2 import M2N2
     clf = M2N2(win_size=win_size, num_channels=data_test.shape[1], lr=lr, batch_size=batch_size, epochs=epochs, gamma=gamma,latent_dim=64,stride=win_size//2)
@@ -536,6 +535,21 @@ def run_M2N2(data_train, data_test, epochs=10, win_size=20, lr=1e-4, batch_size=
     del clf
     return score.ravel()
 
+def run_CATCH(data_train, data_test, **kwargs):
+    from ..models.CATCH import CATCH
+    clf = CATCH(**kwargs)
+    clf.fit(data_train)
+    score = clf.decision_function(data_test)
+    del clf
+    return score.ravel()
+
+def run_LFTSAD(data_train, data_test, epochs=1, win_size=100, lr=1e-4, batch_size=128, **kwargs):
+    from ..models.LFTSAD import LFTSAD_Detector as LFTSAD
+    clf = LFTSAD(win_size=win_size, stride=1, batch_size=batch_size, epochs=epochs, lr=lr)
+    clf.fit(data_train)
+    score = clf.decision_function(data_test)
+    del clf
+    return score.ravel()
 
 def run_DualTF(data_train, data_test, win_size=36, nest_length=None,
                lr=1e-4, batch_size=16, **kwargs

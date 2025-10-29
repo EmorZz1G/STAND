@@ -14,6 +14,9 @@ print('Current working directory: ', os.getcwd())
 model_list = ['USAD', 'OmniAnomaly', 
                         'AnomalyTransformer', 'TimesNet']
 model_list = ['TimesNet']
+model_list = ['M2N2']
+model_list = ['LFTSAD']
+model_list = ['CATCH']
 dataset_list = ['PSM', 'SWAT', 'WADI', 'NIPS_TS_Swan', 'NIPS_TS_Water']# 'UCR']
 
 

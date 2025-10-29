@@ -56,6 +56,7 @@ class _StandNet(nn.Module):
         x = self.clf(x).squeeze(-1)
         return x
 
+import pathlib
 
 class STAND(BaseDetector):
     """Supervised time series anomaly detector (PyTorch), following sliding-window API.
@@ -105,6 +106,10 @@ class STAND(BaseDetector):
         self._model = None
         self.debug=debug
         self.fit_on_loader=0
+        self.if_save = kwargs.get('if_save', 0)
+        self.model_saving_path = kwargs.get('model_saving_path', './saved_models')
+        self.model_saving_path = pathlib.Path(self.model_saving_path)
+        print(kwargs)
 
     def _build_model(self, input_dim):
         model = _StandNet(input_dim=input_dim, d_model=self.d_model,
@@ -289,7 +294,9 @@ class STAND(BaseDetector):
         #         + list(self.decision_scores_)
         #         + [self.decision_scores_[-1]] * ((self.win_size - 1) // 2)
         #     )
-
+        if self.if_save:
+            # 直接保存这个实例
+            torch.save(self, self.model_saving_path / f'STAND_win{self.win_size}_dm{self.d_model}_nl{self.num_layers}_bi{self.bidirectional}_c{feature_dim}.pt')
         return self
 
     def decision_function(self, X):
