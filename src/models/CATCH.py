@@ -938,6 +938,11 @@ class CATCH(BaseDetector):
         self.criterion = nn.MSELoss()
         self.auxi_loss = frequency_loss(self.config)
         self.seq_len = self.config.seq_len
+        self.if_save = kwargs.get("if_save", False)
+        if self.if_save:
+            print("CATCH will save the trained model.")
+        else:
+            print("CATCH will not save the trained model.")
 
     @staticmethod
     def required_hyper_params() -> dict:
@@ -999,6 +1004,10 @@ class CATCH(BaseDetector):
     def fit(self, X):
         X = pd.DataFrame(X)
         self.detect_fit(X, X)
+
+        if self.if_save:
+            # 直接保存这个实例
+            torch.save(self, self.model_saving_path / f'CATCH_c{X.shape[1]}.pt')
     
     def decision_function(self, X) -> np.ndarray:
         X = pd.DataFrame(X)
