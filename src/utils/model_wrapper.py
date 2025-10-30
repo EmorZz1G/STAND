@@ -537,6 +537,15 @@ def run_M2N2(data_train, data_test, epochs=10, win_size=20, lr=1e-4, batch_size=
 
 def run_CATCH(data_train, data_test, **kwargs):
     from ..models.CATCH import CATCH
+    print("默认直接使用CATCH的参数调用，如果使用本框架，需要注释掉下面的参数删除代码")
+    if "lr" in kwargs:
+        del kwargs["lr"]
+    if "batch_size" in kwargs:
+        del kwargs["batch_size"]
+    if "d_model" in kwargs:
+        del kwargs["d_model"]
+    if 'epochs' in kwargs:
+        del kwargs['epochs']
     clf = CATCH(**kwargs)
     clf.fit(data_train)
     score = clf.decision_function(data_test)
