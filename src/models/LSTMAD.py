@@ -40,6 +40,8 @@ class LSTMModel(nn.Module):
             
         return outputs
     
+import pathlib
+
 class LSTMAD():
     def __init__(self,
                  window_size=100,
@@ -50,7 +52,9 @@ class LSTMAD():
                  feats=1,
                  hidden_dim=20,
                  num_layer=2,
-                 validation_size=0.2):
+                 validation_size=0.2,
+                 if_save=False,
+                 model_saving_path=None):
         super().__init__()
         self.__anomaly_score = None
         
@@ -85,6 +89,11 @@ class LSTMAD():
         self.mu = None
         self.sigma = None
         self.eps = 1e-10
+
+        self.if_save = if_save
+        self.model_saving_path = model_saving_path or './saved_models'
+        self.model_saving_path = pathlib.Path(self.model_saving_path)
+        print('if_save', self.if_save)
         
     def fit(self, data):
         tsTrain = data[:int((1-self.validation_size)*len(data))]
@@ -165,6 +174,11 @@ class LSTMAD():
                 if self.early_stopping.early_stop:
                     print("   Early stopping<<<")
                 break
+
+        if self.if_save:
+            # 直接保存这个实例
+            torch.save(self, self.model_saving_path / f'LSTM.pt')
+        return self
 
     def decision_function(self, data):
         test_loader = DataLoader(

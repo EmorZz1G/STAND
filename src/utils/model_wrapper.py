@@ -118,7 +118,7 @@ def run_AdaBoost_S(data_train, data_train_labels, data_test, data_all_test=None,
 
 def run_ExtraTrees_S(data_train, data_train_labels, data_test, data_all_test=None, win_size=3, n_estimators=100, **kwargs):
     from ..models.supervised import ExtraTrees
-    clf = ExtraTrees(win_size=win_size, n_estimators=n_estimators)
+    clf = ExtraTrees(win_size=win_size, n_estimators=n_estimators, if_save=kwargs['if_save'], model_saving_path=kwargs['model_saving_path'])
     clf.fit(data_train, data_train_labels)
     score = clf.decision_function(data_test)
     if data_all_test is not None:
@@ -129,7 +129,7 @@ def run_ExtraTrees_S(data_train, data_train_labels, data_test, data_all_test=Non
 
 def run_LightGBM_S(data_train, data_train_labels, data_test, data_all_test=None, win_size=3, **kwargs):
     from ..models.supervised import LightGBM
-    clf = LightGBM(win_size=win_size)
+    clf = LightGBM(win_size=win_size, if_save=kwargs['if_save'], model_saving_path=kwargs['model_saving_path'])
     clf.fit(data_train, data_train_labels)
     score = clf.decision_function(data_test)
     if data_all_test is not None:
@@ -413,7 +413,8 @@ def run_CNN(data_train, data_test, window_size=100, num_channel=[32, 32, 40], lr
 
 def run_LSTMAD(data_train, data_test, window_size=100, lr=0.0008, **kwargs):
     from ..models.LSTMAD import LSTMAD
-    clf = LSTMAD(window_size=window_size, pred_len=1, lr=lr, feats=data_test.shape[1], batch_size=128)
+    clf = LSTMAD(window_size=window_size, pred_len=1, lr=lr, feats=data_test.shape[1], batch_size=128, if_save=kwargs['if_save'],
+                 model_saving_path=kwargs['model_saving_path'])
     clf.fit(data_train)
     score = clf.decision_function(data_test)
     return score.ravel()
@@ -529,7 +530,8 @@ def run_MOMENT_FT(data_train, data_test, win_size=256, **kwargs):
 
 def run_M2N2(data_train, data_test, epochs=10, win_size=20, lr=1e-4, batch_size=128,gamma=0.95, **kwargs):
     from ..models.M2N2 import M2N2
-    clf = M2N2(win_size=win_size, num_channels=data_test.shape[1], lr=lr, batch_size=batch_size, epochs=epochs, gamma=gamma,latent_dim=64,stride=win_size//2)
+    clf = M2N2(win_size=win_size, num_channels=data_test.shape[1], lr=lr, batch_size=batch_size, epochs=epochs, gamma=gamma,latent_dim=64,stride=win_size//2, if_save=kwargs['if_save'],
+                 model_saving_path=kwargs['model_saving_path'])
     clf.fit(data_train)
     score = clf.decision_function(data_test)
     del clf

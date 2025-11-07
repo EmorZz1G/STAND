@@ -13,6 +13,7 @@ logs/post
 /.vscode
 
 /model_saving
+/ipynb
 
 .cce
 
