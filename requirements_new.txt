@@ -1,0 +1,16 @@
+# Core dependencies
+torch
+numpy
+scipy
+scikit-learn
+pandas
+matplotlib
+seaborn
+tqdm
+pyyaml
+deprecated
+cce
+tslearn
+stumpy
+arch
+hurst
