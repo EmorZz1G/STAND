@@ -8,11 +8,12 @@ os.chdir(cur_proj)
 print('Current working directory: ', os.getcwd())
 
 model_list = ['STAND']
+model_list = ['ExtraTrees','LightGBM']
 dataset_list = ['SWAT']#, 'WADI', 'NIPS_TS_Swan', 'NIPS_TS_Water']#, 'UCR']
 
 import subprocess
 
-def run_model(model_name, dataset_list, train_test_split=0.5, win_size=32, num_layers=1, d_model=256, bidirectional=1):
+def run_model(model_name, dataset_list, train_test_split=0.5, win_size=32, num_layers=1, d_model=300, bidirectional=1):
     for dataset in dataset_list:
         if dataset == 'UCR':
             index_range = range(1, 251)

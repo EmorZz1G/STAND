@@ -8,6 +8,8 @@ from sklearn.ensemble import ExtraTreesClassifier as ExtraTrees_
 
 from ..feature import Window
 import numpy as np
+import torch
+import pathlib
 
 class SupervisedModel:
     def fit(self, X, y):
@@ -16,6 +18,13 @@ class SupervisedModel:
         y = y[self.win_size - 1:]
         print(X_windows.shape, y.shape)
         self.detector_.fit(X_windows, y)
+
+        try:
+            if self.if_save:
+                # 直接保存这个实例
+                torch.save(self, self.model_saving_path / f'{self.__class__.__name__}.pt')
+        except:
+            pass
         return self
     
     def decision_function(self, X):
@@ -56,7 +65,8 @@ class LR(SupervisedModel):
         return self.detector_.decision_function(X)
 
 class RF(SupervisedModel):
-    def __init__(self, win_size=3, n_estimators=100, criterion="gini", max_depth=None, min_samples_split=2, min_samples_leaf=1, min_weight_fraction_leaf=0.0, max_features="sqrt", max_leaf_nodes=None, min_impurity_decrease=0.0, bootstrap=True, oob_score=False, n_jobs=-1, random_state=None, verbose=0, warm_start=False, class_weight=None, ccp_alpha=0.0, max_samples=None):
+    def __init__(self, win_size=3, n_estimators=100, criterion="gini", max_depth=None, min_samples_split=2, min_samples_leaf=1, min_weight_fraction_leaf=0.0, max_features="sqrt", max_leaf_nodes=None, min_impurity_decrease=0.0, bootstrap=True, oob_score=False, n_jobs=-1, random_state=None, verbose=0, warm_start=False, class_weight=None, ccp_alpha=0.0, max_samples=None, if_save=False,
+                 model_saving_path=None):
         self.detector_ = RF_(n_estimators=n_estimators, criterion=criterion, max_depth=max_depth, min_samples_split=min_samples_split, min_samples_leaf=min_samples_leaf, min_weight_fraction_leaf=min_weight_fraction_leaf, max_features=max_features, max_leaf_nodes=max_leaf_nodes, min_impurity_decrease=min_impurity_decrease, bootstrap=bootstrap, oob_score=oob_score, n_jobs=n_jobs, random_state=random_state, verbose=verbose, warm_start=warm_start, class_weight=class_weight, ccp_alpha=ccp_alpha, max_samples=max_samples)
         self.win_size = win_size
 
@@ -70,17 +80,30 @@ class AdaBoost(SupervisedModel):
         n_estimators=50,
         learning_rate=1.0,
         algorithm="SAMME.R",
-        random_state=None):
+        random_state=None,
+        if_save=False,
+                 model_saving_path=None):
         self.detector_ = AdaBoost_(estimator=estimator, n_estimators=n_estimators, learning_rate=learning_rate, algorithm=algorithm, random_state=random_state)
         self.win_size = win_size
+
+        self.if_save = if_save
+        self.model_saving_path = model_saving_path or './saved_models'
+        self.model_saving_path = pathlib.Path(self.model_saving_path)
+        print('if_save', self.if_save, model_saving_path)
 
     def decision_function_(self, X):
         return self.detector_.predict_proba(X)[:, 1]
 
 class ExtraTrees(SupervisedModel):
-    def __init__(self, win_size=3, n_estimators=100, criterion="gini", max_depth=None, min_samples_split=2, min_samples_leaf=1, min_weight_fraction_leaf=0.0, max_features="sqrt", max_leaf_nodes=None, min_impurity_decrease=0.0, bootstrap=False, oob_score=False, n_jobs=-1, random_state=None, verbose=0, warm_start=False, class_weight=None, ccp_alpha=0.0, max_samples=None):
+    def __init__(self, win_size=3, n_estimators=100, criterion="gini", max_depth=None, min_samples_split=2, min_samples_leaf=1, min_weight_fraction_leaf=0.0, max_features="sqrt", max_leaf_nodes=None, min_impurity_decrease=0.0, bootstrap=False, oob_score=False, n_jobs=-1, random_state=None, verbose=0, warm_start=False, class_weight=None, ccp_alpha=0.0, max_samples=None,if_save=False,
+                 model_saving_path=None):
         self.detector_ = ExtraTrees_(n_estimators=n_estimators, criterion=criterion, max_depth=max_depth, min_samples_split=min_samples_split, min_samples_leaf=min_samples_leaf, min_weight_fraction_leaf=min_weight_fraction_leaf, max_features=max_features, max_leaf_nodes=max_leaf_nodes, min_impurity_decrease=min_impurity_decrease, bootstrap=bootstrap, oob_score=oob_score, n_jobs=n_jobs, random_state=random_state, verbose=verbose, warm_start=warm_start, class_weight=class_weight, ccp_alpha=ccp_alpha, max_samples=max_samples)
         self.win_size = win_size
+
+        self.if_save = if_save
+        self.model_saving_path = model_saving_path or './saved_models'
+        self.model_saving_path = pathlib.Path(self.model_saving_path)
+        print('if_save', self.if_save, model_saving_path)
 
     def decision_function_(self, X):
         return self.detector_.predict_proba(X)[:, 1]
@@ -108,9 +131,16 @@ class LightGBM(SupervisedModel):
         tol=1e-7,
         verbose=0,
         random_state=None,
-        class_weight=None):
+        class_weight=None,
+        if_save=False,
+                 model_saving_path=None):
         self.detector_ = LightGBM_(loss=loss, learning_rate=learning_rate, max_iter=max_iter, max_leaf_nodes=max_leaf_nodes, max_depth=max_depth, min_samples_leaf=min_samples_leaf, l2_regularization=l2_regularization, max_features=max_features, max_bins=max_bins, categorical_features=categorical_features, monotonic_cst=monotonic_cst, interaction_cst=interaction_cst, warm_start=warm_start, early_stopping=early_stopping, scoring=scoring, validation_fraction=validation_fraction, n_iter_no_change=n_iter_no_change, tol=tol, verbose=verbose, random_state=random_state, class_weight=class_weight)
         self.win_size = win_size
+
+        self.if_save = if_save
+        self.model_saving_path = model_saving_path or './saved_models'
+        self.model_saving_path = pathlib.Path(self.model_saving_path)
+        print('if_save', self.if_save, model_saving_path)
 
     def decision_function_(self, X):
         return self.detector_.predict_proba(X)[:, 1]

@@ -7,7 +7,7 @@ import os
 os.chdir(cur_proj)
 print('Current working directory: ', os.getcwd())
 
-model_list = ['CATCH']
+model_list = ['LSTMAD','M2N2']
 dataset_list = ['SWAT']#, 'WADI', 'NIPS_TS_Swan', 'NIPS_TS_Water']#, 'UCR']
 
 import subprocess

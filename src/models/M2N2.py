@@ -490,6 +490,8 @@ from ..utils.torch_utility import EarlyStoppingTorch, get_gpu
 from torch.utils.data import DataLoader
 from ..utils.dataset import ReconstructDataset
 
+import pathlib
+
 class M2N2(BaseDetector):
     def __init__(self, 
                  win_size=12,
@@ -501,7 +503,10 @@ class M2N2(BaseDetector):
                  lr=1e-3,
                  normalization="Detrend",
                  gamma=0.99,
-                 th='q95'):
+                 th='q95',
+                if_save=False,
+                 model_saving_path=None
+                 ):
 
         self.model_name = 'M2N2'
         self.normalization = normalization
@@ -522,6 +527,10 @@ class M2N2(BaseDetector):
         self.stride = stride
         self.validation_size = 0.1
         
+        self.if_save = if_save
+        self.model_saving_path = model_saving_path or './saved_models'
+        self.model_saving_path = pathlib.Path(self.model_saving_path)
+        print('if_save', self.if_save)
         
         
         
@@ -560,7 +569,10 @@ class M2N2(BaseDetector):
         train_anoscs = self.tester.calculate_anomaly_scores(train_loader)
         
         self.tau = np.quantile(train_anoscs, self.th)
-        
+        if self.if_save:
+            # 直接保存这个实例
+            torch.save(self, self.model_saving_path / f'M2N2.pt')
+        return self
     
     def decision_function(self, data):
         self.model.eval()
