@@ -1,7 +1,7 @@
 dataset_list = ['PSM', 'SWAT', 'WADI', 'NIPS_TS_Swan', 'NIPS_TS_Water']
 anomaly_ratio_list = [0.1, 0.2, 0.3, 0.4, 0.5]
 
-base_pth = r'/share/home/202220143416/project/FTSAD/datasets'
+base_pth = r'/public/home/202220143416/projects/FTSAD/datasets'
 
 import pathlib
 proj_pth = pathlib.Path(__file__).parent.parent.parent
@@ -16,7 +16,7 @@ for dataset_name in dataset_list:
     for anomaly_ratio in anomaly_ratio_list:
         print(f'Generating dataset details for dataset: {dataset_name} with anomaly ratio: {anomaly_ratio}')
         dataset_ = get_loader_segment(0, base_pth+'/'+dataset_name, 64, 32, 16, 'train', dataset_name, 0, True)
-        train_dataset = RandomSupervisedDataset(dataset_.test, dataset_.test_labels, 32, 16, 'train', anomaly_ratio, 0.5)
+        train_dataset = RandomSupervisedDataset(dataset_.test, dataset_.test_labels, 32, 16, 'train', anomaly_ratio, 0.3)
         train_anomaly_ratio = train_dataset.train_anomaly_ratio
         test_anomaly_ratio = train_dataset.test_anomaly_ratio
         all_test_anomaly_ratio = sum(train_dataset.all_test_labels) / len(train_dataset.all_test_labels)
