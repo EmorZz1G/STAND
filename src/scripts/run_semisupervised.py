@@ -7,16 +7,20 @@ import os
 os.chdir(cur_proj)
 print('Current working directory: ', os.getcwd())
 
-# model_list = ['OCSVM', 'AutoEncoder', 'CNN', 'LSTMAD', 'TranAD', 'USAD', 'OmniAnomaly', 
-                        # 'AnomalyTransformer', 'TimesNet']
+model_list = ['OCSVM', 'AutoEncoder', 'CNN', 'LSTMAD', 'TranAD', 'USAD', 'OmniAnomaly', 
+                        'AnomalyTransformer', 'TimesNet','M2N2','LFTSAD','CATCH']
+
+model_list = ['OmniAnomaly', 
+                        'AnomalyTransformer', 'TimesNet','M2N2','LFTSAD','CATCH']
 # model_list = ['AutoEncoder', 'CNN', 'LSTMAD', 'USAD', 'OmniAnomaly', 
 #                         'AnomalyTransformer', 'TimesNet']
-model_list = ['USAD', 'OmniAnomaly', 
-                        'AnomalyTransformer', 'TimesNet']
-model_list = ['TimesNet']
-model_list = ['M2N2']
-model_list = ['LFTSAD']
-model_list = ['CATCH']
+# model_list = ['USAD', 'OmniAnomaly', 
+#                         'AnomalyTransformer', 'TimesNet']
+# model_list = ['TimesNet']
+# model_list = ['M2N2']
+# model_list = ['LFTSAD']
+# model_list = ['CATCH']
+
 dataset_list = ['PSM', 'SWAT', 'WADI', 'NIPS_TS_Swan', 'NIPS_TS_Water']# 'UCR']
 
 

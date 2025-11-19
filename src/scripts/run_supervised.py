@@ -11,9 +11,9 @@ print('Current working directory: ', os.getcwd())
 model_list = ['RF', 'SVM', 'AdaBoost', 'ExtraTrees', 'LightGBM']
 # model_list = ['SVM', 'AdaBoost', 'ExtraTrees', 'LightGBM']
 # model_list = ['ExtraTrees', 'LightGBM']
-model_list = ['LightGBM']
-# dataset_list = ['PSM', 'SWAT', 'WADI', 'NIPS_TS_Swan', 'NIPS_TS_Water']#, 'UCR']
-dataset_list = ['SWAT']#, 'WADI', 'NIPS_TS_Swan', 'NIPS_TS_Water']#, 'UCR']
+# model_list = ['LightGBM']
+dataset_list = ['PSM', 'SWAT', 'WADI', 'NIPS_TS_Swan', 'NIPS_TS_Water']#, 'UCR']
+# dataset_list = ['SWAT']#, 'WADI', 'NIPS_TS_Swan', 'NIPS_TS_Water']#, 'UCR']
 # dataset_list = ['SWAT', 'WADI', 'NIPS_TS_Swan', 'NIPS_TS_Water']#, 'UCR']
 # dataset_list = ['WADI', 'NIPS_TS_Swan', 'NIPS_TS_Water']#, 'UCR']
 
