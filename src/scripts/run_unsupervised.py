@@ -7,11 +7,11 @@ import os
 os.chdir(cur_proj)
 print('Current working directory: ', os.getcwd())
 
-# model_list = ['IForest', 'LOF', 'POLY', 'MatrixProfile', 'PCA', 'HBOS', 'KNN', 'KMeansAD', 'KShapeAD', 'Random']
+model_list = ['IForest', 'LOF', 'POLY', 'MatrixProfile', 'PCA', 'HBOS', 'KNN', 'KMeansAD', 'KShapeAD', 'Random']
 # model_list = ['MatrixProfile', 'PCA', 'HBOS', 'KNN', 'KMeansAD', 'KShapeAD', 'Random']
 # model_list = ['PCA', 'HBOS', 'KNN', 'KMeansAD', 'KShapeAD', 'Random']
 # model_list = ['HBOS', 'KNN', 'KMeansAD', 'Random']
-model_list = ['Random']
+model_list = ['Random','IForest','LOF','PCA','HBOS','KNN','KMeansAD']
 dataset_list = ['PSM', 'SWAT', 'WADI', 'NIPS_TS_Swan', 'NIPS_TS_Water']#, 'UCR']
 
 extra_config = {
