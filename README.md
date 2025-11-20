@@ -1,4 +1,5 @@
-# 📊 Labels Matter More Than Models: Quantifying the Benefit of Supervised Time Series Anomaly Detection
+## 📊 Labels Matter More Than Models: <font size=3>Quantifying the Benefit of Supervised Time Series Anomaly Detection</font>
+
 
 This repository contains the implementation of **STAND** 🚀, a simple supervised time series anomaly detection baseline, as described in our paper. STAND demonstrates that with proper supervision, even simple models can outperform complex unsupervised approaches in time series anomaly detection tasks.
 
