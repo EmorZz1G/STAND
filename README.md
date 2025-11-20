@@ -58,7 +58,8 @@ python run_supervised.py
 
 # To run specific configurations, modify the script parameters
 # For example, to run only STAND on specific datasets:
-python run_supervised.py --model_name STAND --dataset_name PSM
+cd src/exp
+python supervised.py --model_name STAND --dataset_name PSM
 ```
 
 ### 🔍 Unsupervised Experiments
@@ -77,7 +78,9 @@ python run_semisupervised.py
 
 ## 📚 Datasets
 
-The code supports five real-world time series datasets (PSM, SWaT, WADI, Swan, Water) for anomaly detection:
+The code supports five real-world time series datasets (PSM, SWaT, WADI, Swan, Water) for anomaly detection.
+
+For dataset downloading, please refer to the [FTSAD](https://github.com/EmorZz1G/FTSAD) project.
 
 
 ## 🏆 Key Results
