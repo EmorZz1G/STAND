@@ -3,7 +3,7 @@ __pycache__/
 *.py[codz]
 *$py.class
 
-
+tmp_file.txt
 post
 
 logs/post
