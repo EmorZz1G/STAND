@@ -3,7 +3,7 @@
 This repository contains the implementation of **STAND** 🚀, a simple supervised time series anomaly detection baseline, as described in our paper. STAND demonstrates that with proper supervision, even simple models can outperform complex unsupervised approaches in time series anomaly detection tasks.
 
 
- <iframe src="https://docs.google.com/viewer?url=https://github.com/EmorZz1G/STAND/tree/main/docs/static/pdfs/fw.pdf&embedded=true" style="width:100%; height:400px;" frameborder="0"></iframe>
+<iframe src="https://docs.google.com/viewer?url=https://github.com/EmorZz1G/STAND/tree/main/docs/static/pdfs/fw.pdf&embedded=true" style="width:100%; height:400px;" frameborder="0"></iframe>
 
 
 ## 💡 Key Findings
