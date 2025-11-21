@@ -5,7 +5,7 @@ This repository contains the implementation of **STAND** 🚀, a simple supervis
 
 
 <div style="text-align: center;">
-  <img src="./docs/static/images/fw.png" alt="Classification of time series anomaly detection methods" width="80%"/>
+  <img src="./docs/static/images/fw.png" alt="Classification of time series anomaly detection methods" width="50%"/>
   <p style="margin-top: 8px; color: #666; font-style: italic;">Fig. 1: Classification of time series anomaly detection methods.</p>
 </div>
 
