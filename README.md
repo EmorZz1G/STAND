@@ -4,10 +4,10 @@
 This repository contains the implementation of **STAND** 🚀, a simple supervised time series anomaly detection baseline, as described in our paper. STAND demonstrates that with proper supervision, even simple models can outperform complex unsupervised approaches in time series anomaly detection tasks.
 
 
-| |
-| :---: |
-| ![Classification of time series anomaly detection methods](./docs/static/images/fw.png) |
-| *Fig. 1: Classification of time series anomaly detection methods.* |
+<div style="text-align: center;">
+  <img src="./docs/static/images/fw.png" alt="Classification of time series anomaly detection methods" />
+  <p style="margin-top: 8px; color: #666; font-style: italic;">Fig. 1: Classification of time series anomaly detection methods.</p>
+</div>
 
 ## 💡 Key Findings
 
