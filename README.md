@@ -103,7 +103,16 @@ For dataset downloading, please refer to the [FTSAD](https://github.com/EmorZz1G
 If you use this code in your research, please cite our paper:
 
 ```
-TODO
+@article{zhong2025labels,
+  title={Labels Matter More Than Models: Quantifying the Benefit of Supervised Time Series Anomaly Detection},
+  author={Zhijie Zhong and Zhiwen Yu and Kaixiang Yang and C. L. Philip Chen},
+  journal={arXiv Preprint arXiv:2511.16145},
+  year={2025},
+  pages={1--16},
+  archivePrefix={arXiv},
+  primaryClass={cs.LG},
+  doi={10.48550/arXiv.2511.16145},
+}
 ```
 
 ## 📄 License
