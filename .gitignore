@@ -17,6 +17,10 @@ logs/post
 /ipynb
 /src/ipynb
 
+nohup.out
+
+logs/log_file
+
 .cce
 
 # Distribution / packaging

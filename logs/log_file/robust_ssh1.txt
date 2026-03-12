@@ -179,3 +179,55 @@ Metric: VUS-PR, Test: 0.4771, All Test: 0.6573, Left Test: 0.4771
 Result saved to:  /public/home/202220143416/projects/STAND/logs/supervised_robust_exp.csv
 /public/home/202220143416/miniconda3/envs/torch310/lib/python3.10/site-packages/sklearn/ensemble/_weight_boosting.py:519: FutureWarning: The parameter 'algorithm' is deprecated in 1.6 and has no effect. It will be removed in version 1.8.
   warnings.warn(
+Config: --------------------------------
+Namespace(d_model=32, num_layers=1, bidirectional=0, model_name='AdaBoost', task_name='supervised', win_size=3, step_size=1, batch_size=128, epochs=10, lr=0.001, model_saving_path='/public/home/202220143416/projects/STAND/model_saving', dataset_path='/public/home/202220143416/projects/FTSAD/datasets', dataset_name='SWAT', if_save=0, index=0, train_test_split=0.5, anomaly_ratio=0.1, train_split_max=0.3, metric_list=['CCE', 'F1', 'Aff-F1', 'UAff-F1', 'AUC-ROC', 'VUS-PR'], quantile=0.95, noise_prob=0.03)
+Log will be saved to:  /public/home/202220143416/projects/STAND/logs
+test: (449919, 50)
+train: (495000, 50)
+if_save False None
+(224959, 50) (224959,)
+(224957, 150) (224957,)
+Metric: CCE, Test: 0.1575, All Test: 0.1481, Left Test: 0.1575
+Metric: F1, Test: 0.0594, All Test: 0.2308, Left Test: 0.0594
+Metric: Aff-F1, Test: 0.3511, All Test: 0.5860, Left Test: 0.3511
+[Info]: Unbiased_Aff_prec_bias is not set. Calculate by sample bias. The time-cost will be higher than setting it manually. You can set it by calling `cal_unbiased_aff_prec_bias` function.
+[Info]: Unbiased_Aff_prec_bias is set to 0.5428 by sampling 3 times.
+[Info]: Unbiased_Aff_prec_bias sampling results: [0.5373, 0.55, 0.5411]
+[Info]: Unbiased_Aff_prec_bias is not set. Calculate by sample bias. The time-cost will be higher than setting it manually. You can set it by calling `cal_unbiased_aff_prec_bias` function.
+[Info]: Unbiased_Aff_prec_bias is set to 0.5202 by sampling 3 times.
+[Info]: Unbiased_Aff_prec_bias sampling results: [0.5145, 0.5189, 0.5273]
+[Info]: Unbiased_Aff_prec_bias is not set. Calculate by sample bias. The time-cost will be higher than setting it manually. You can set it by calling `cal_unbiased_aff_prec_bias` function.
+[Info]: Unbiased_Aff_prec_bias is set to 0.5501 by sampling 3 times.
+[Info]: Unbiased_Aff_prec_bias sampling results: [0.5517, 0.5556, 0.5429]
+Metric: UAff-F1, Test: 0.2022, All Test: 0.4132, Left Test: 0.1927
+Metric: AUC-ROC, Test: 0.8767, All Test: 0.8828, Left Test: 0.8767
+Metric: VUS-PR, Test: 0.5405, All Test: 0.5639, Left Test: 0.5405
+Result saved to:  /public/home/202220143416/projects/STAND/logs/supervised_robust_exp.csv
+/public/home/202220143416/miniconda3/envs/torch310/lib/python3.10/site-packages/sklearn/ensemble/_weight_boosting.py:519: FutureWarning: The parameter 'algorithm' is deprecated in 1.6 and has no effect. It will be removed in version 1.8.
+  warnings.warn(
+Config: --------------------------------
+Namespace(d_model=32, num_layers=1, bidirectional=0, model_name='AdaBoost', task_name='supervised', win_size=3, step_size=1, batch_size=128, epochs=10, lr=0.001, model_saving_path='/public/home/202220143416/projects/STAND/model_saving', dataset_path='/public/home/202220143416/projects/FTSAD/datasets', dataset_name='WADI', if_save=0, index=0, train_test_split=0.5, anomaly_ratio=0.1, train_split_max=0.3, metric_list=['CCE', 'F1', 'Aff-F1', 'UAff-F1', 'AUC-ROC', 'VUS-PR'], quantile=0.95, noise_prob=0.03)
+Log will be saved to:  /public/home/202220143416/projects/STAND/logs
+test: (34561, 122)
+train: (241921, 122)
+if_save False None
+(17280, 122) (17280,)
+(17278, 366) (17278,)
+Metric: CCE, Test: 0.0789, All Test: 0.2167, Left Test: 0.0789
+Metric: F1, Test: 0.2221, All Test: 0.6838, Left Test: 0.2221
+Metric: Aff-F1, Test: 0.6232, All Test: 0.8354, Left Test: 0.6232
+[Info]: Unbiased_Aff_prec_bias is not set. Calculate by sample bias. The time-cost will be higher than setting it manually. You can set it by calling `cal_unbiased_aff_prec_bias` function.
+[Info]: Unbiased_Aff_prec_bias is set to 0.5758 by sampling 3 times.
+[Info]: Unbiased_Aff_prec_bias sampling results: [0.4722, 0.6831, 0.5721]
+[Info]: Unbiased_Aff_prec_bias is not set. Calculate by sample bias. The time-cost will be higher than setting it manually. You can set it by calling `cal_unbiased_aff_prec_bias` function.
+[Info]: Unbiased_Aff_prec_bias is set to 0.5251 by sampling 3 times.
+[Info]: Unbiased_Aff_prec_bias sampling results: [0.5396, 0.4859, 0.5498]
+[Info]: Unbiased_Aff_prec_bias is not set. Calculate by sample bias. The time-cost will be higher than setting it manually. You can set it by calling `cal_unbiased_aff_prec_bias` function.
+[Info]: Unbiased_Aff_prec_bias is set to 0.5840 by sampling 3 times.
+[Info]: Unbiased_Aff_prec_bias sampling results: [0.6511, 0.5397, 0.5611]
+Metric: UAff-F1, Test: 0.0652, All Test: 0.7369, Left Test: 0.0300
+Metric: AUC-ROC, Test: 0.6373, All Test: 0.8601, Left Test: 0.6373
+Metric: VUS-PR, Test: 0.1658, All Test: 0.7158, Left Test: 0.1659
+Result saved to:  /public/home/202220143416/projects/STAND/logs/supervised_robust_exp.csv
+/public/home/202220143416/miniconda3/envs/torch310/lib/python3.10/site-packages/sklearn/ensemble/_weight_boosting.py:519: FutureWarning: The parameter 'algorithm' is deprecated in 1.6 and has no effect. It will be removed in version 1.8.
+  warnings.warn(
