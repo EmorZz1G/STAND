@@ -79,7 +79,7 @@ class AdaBoost(SupervisedModel):
         *,
         n_estimators=50,
         learning_rate=1.0,
-        algorithm="SAMME.R",
+        algorithm="SAMME",
         random_state=None,
         if_save=False,
                  model_saving_path=None):
@@ -120,7 +120,7 @@ class LightGBM(SupervisedModel):
         l2_regularization=0.0,
         max_features=1.0,
         max_bins=255,
-        categorical_features="warn",
+        categorical_features="from_dtype",
         monotonic_cst=None,
         interaction_cst=None,
         warm_start=False,
