@@ -1,0 +1,271 @@
+nohup: ignoring input
+Config: --------------------------------
+Namespace(d_model=32, num_layers=1, bidirectional=0, model_name='RF', task_name='supervised', win_size=3, step_size=1, batch_size=128, epochs=10, lr=0.001, model_saving_path='/public/home/202220143416/projects/STAND/model_saving', dataset_path='/public/home/202220143416/projects/FTSAD/datasets', dataset_name='PSM', if_save=0, index=0, train_test_split=0.5, anomaly_ratio=0.1, train_split_max=0.3, metric_list=['CCE', 'F1', 'Aff-F1', 'UAff-F1', 'AUC-ROC', 'VUS-PR'], quantile=0.95, noise_prob=0.01)
+Log will be saved to:  /public/home/202220143416/projects/STAND/logs
+train: (132481, 25)
+test: (87841, 25)
+(43920, 25) (43920,)
+(43918, 75) (43918,)
+Adjust quantile to:  0.8999999999999999
+Metric: CCE, Test: 0.0868, All Test: 0.4789, Left Test: 0.0868
+Metric: F1, Test: 0.1291, All Test: 0.4275, Left Test: 0.1291
+Metric: Aff-F1, Test: 0.6247, All Test: 0.1977, Left Test: 0.6247
+[Info]: Unbiased_Aff_prec_bias is not set. Calculate by sample bias. The time-cost will be higher than setting it manually. You can set it by calling `cal_unbiased_aff_prec_bias` function.
+[Info]: Unbiased_Aff_prec_bias is set to 0.5542 by sampling 3 times.
+[Info]: Unbiased_Aff_prec_bias sampling results: [0.5305, 0.5591, 0.573]
+[Info]: Unbiased_Aff_prec_bias is not set. Calculate by sample bias. The time-cost will be higher than setting it manually. You can set it by calling `cal_unbiased_aff_prec_bias` function.
+[Info]: Unbiased_Aff_prec_bias is set to 0.5368 by sampling 3 times.
+[Info]: Unbiased_Aff_prec_bias sampling results: [0.5323, 0.5413, 0.5368]
+[Info]: Unbiased_Aff_prec_bias is not set. Calculate by sample bias. The time-cost will be higher than setting it manually. You can set it by calling `cal_unbiased_aff_prec_bias` function.
+[Info]: Unbiased_Aff_prec_bias is set to 0.5721 by sampling 3 times.
+[Info]: Unbiased_Aff_prec_bias sampling results: [0.5957, 0.5436, 0.5769]
+Metric: UAff-F1, Test: 0.3840, All Test: 0.1977, Left Test: 0.3567
+Metric: AUC-ROC, Test: 0.6978, All Test: 0.9163, Left Test: 0.6978
+Metric: VUS-PR, Test: 0.5661, All Test: 0.8443, Left Test: 0.5661
+Result saved to:  /public/home/202220143416/projects/STAND/logs/supervised_robust_exp.csv
+Config: --------------------------------
+Namespace(d_model=32, num_layers=1, bidirectional=0, model_name='RF', task_name='supervised', win_size=3, step_size=1, batch_size=128, epochs=10, lr=0.001, model_saving_path='/public/home/202220143416/projects/STAND/model_saving', dataset_path='/public/home/202220143416/projects/FTSAD/datasets', dataset_name='SWAT', if_save=0, index=0, train_test_split=0.5, anomaly_ratio=0.1, train_split_max=0.3, metric_list=['CCE', 'F1', 'Aff-F1', 'UAff-F1', 'AUC-ROC', 'VUS-PR'], quantile=0.95, noise_prob=0.01)
+Log will be saved to:  /public/home/202220143416/projects/STAND/logs
+test: (449919, 50)
+train: (495000, 50)
+(224959, 50) (224959,)
+(224957, 150) (224957,)
+Metric: CCE, Test: 0.1398, All Test: 0.5022, Left Test: 0.1398
+Metric: F1, Test: 0.2349, All Test: 0.4597, Left Test: 0.2349
+Metric: Aff-F1, Test: 0.7453, All Test: 0.8803, Left Test: 0.7453
+[Info]: Unbiased_Aff_prec_bias is not set. Calculate by sample bias. The time-cost will be higher than setting it manually. You can set it by calling `cal_unbiased_aff_prec_bias` function.
+[Info]: Unbiased_Aff_prec_bias is set to 0.5441 by sampling 3 times.
+[Info]: Unbiased_Aff_prec_bias sampling results: [0.5477, 0.5411, 0.5435]
+[Info]: Unbiased_Aff_prec_bias is not set. Calculate by sample bias. The time-cost will be higher than setting it manually. You can set it by calling `cal_unbiased_aff_prec_bias` function.
+[Info]: Unbiased_Aff_prec_bias is set to 0.5230 by sampling 3 times.
+[Info]: Unbiased_Aff_prec_bias sampling results: [0.5197, 0.5176, 0.5318]
+[Info]: Unbiased_Aff_prec_bias is not set. Calculate by sample bias. The time-cost will be higher than setting it manually. You can set it by calling `cal_unbiased_aff_prec_bias` function.
+[Info]: Unbiased_Aff_prec_bias is set to 0.5470 by sampling 3 times.
+[Info]: Unbiased_Aff_prec_bias sampling results: [0.5418, 0.5535, 0.5457]
+Metric: UAff-F1, Test: 0.5891, All Test: 0.8020, Left Test: 0.5869
+Metric: AUC-ROC, Test: 0.8334, All Test: 0.9351, Left Test: 0.8334
+Metric: VUS-PR, Test: 0.6046, All Test: 0.7197, Left Test: 0.6046
+Result saved to:  /public/home/202220143416/projects/STAND/logs/supervised_robust_exp.csv
+Config: --------------------------------
+Namespace(d_model=32, num_layers=1, bidirectional=0, model_name='RF', task_name='supervised', win_size=3, step_size=1, batch_size=128, epochs=10, lr=0.001, model_saving_path='/public/home/202220143416/projects/STAND/model_saving', dataset_path='/public/home/202220143416/projects/FTSAD/datasets', dataset_name='WADI', if_save=0, index=0, train_test_split=0.5, anomaly_ratio=0.1, train_split_max=0.3, metric_list=['CCE', 'F1', 'Aff-F1', 'UAff-F1', 'AUC-ROC', 'VUS-PR'], quantile=0.95, noise_prob=0.01)
+Log will be saved to:  /public/home/202220143416/projects/STAND/logs
+test: (34561, 122)
+train: (241921, 122)
+(17280, 122) (17280,)
+(17278, 366) (17278,)
+Metric: CCE, Test: 0.1882, All Test: 0.5872, Left Test: 0.1882
+Metric: F1, Test: 0.4430, All Test: 0.8231, Left Test: 0.4430
+Metric: Aff-F1, Test: 0.7517, All Test: 0.8557, Left Test: 0.7517
+[Info]: Unbiased_Aff_prec_bias is not set. Calculate by sample bias. The time-cost will be higher than setting it manually. You can set it by calling `cal_unbiased_aff_prec_bias` function.
+[Info]: Unbiased_Aff_prec_bias is set to 0.5361 by sampling 3 times.
+[Info]: Unbiased_Aff_prec_bias sampling results: [0.541, 0.5101, 0.5571]
+[Info]: Unbiased_Aff_prec_bias is not set. Calculate by sample bias. The time-cost will be higher than setting it manually. You can set it by calling `cal_unbiased_aff_prec_bias` function.
+[Info]: Unbiased_Aff_prec_bias is set to 0.5676 by sampling 3 times.
+[Info]: Unbiased_Aff_prec_bias sampling results: [0.5904, 0.5439, 0.5686]
+[Info]: Unbiased_Aff_prec_bias is not set. Calculate by sample bias. The time-cost will be higher than setting it manually. You can set it by calling `cal_unbiased_aff_prec_bias` function.
+[Info]: Unbiased_Aff_prec_bias is set to 0.6028 by sampling 3 times.
+[Info]: Unbiased_Aff_prec_bias sampling results: [0.6391, 0.6862, 0.4832]
+Metric: UAff-F1, Test: 0.6844, All Test: 0.8028, Left Test: 0.6600
+Metric: AUC-ROC, Test: 0.7956, All Test: 0.9638, Left Test: 0.7956
+Metric: VUS-PR, Test: 0.5420, All Test: 0.8478, Left Test: 0.5420
+Result saved to:  /public/home/202220143416/projects/STAND/logs/supervised_robust_exp.csv
+Config: --------------------------------
+Namespace(d_model=32, num_layers=1, bidirectional=0, model_name='RF', task_name='supervised', win_size=3, step_size=1, batch_size=128, epochs=10, lr=0.001, model_saving_path='/public/home/202220143416/projects/STAND/model_saving', dataset_path='/public/home/202220143416/projects/FTSAD/datasets', dataset_name='NIPS_TS_Swan', if_save=0, index=0, train_test_split=0.5, anomaly_ratio=0.1, train_split_max=0.3, metric_list=['CCE', 'F1', 'Aff-F1', 'UAff-F1', 'AUC-ROC', 'VUS-PR'], quantile=0.95, noise_prob=0.01)
+Log will be saved to:  /public/home/202220143416/projects/STAND/logs
+test: (60000, 38)
+train: (60000, 38)
+(30000, 38) (30000,)
+(29998, 114) (29998,)
+Metric: CCE, Test: 0.3127, All Test: 0.5861, Left Test: 0.3127
+Metric: F1, Test: 0.1477, All Test: 0.2221, Left Test: 0.1478
+Metric: Aff-F1, Test: 0.4688, All Test: 0.4934, Left Test: 0.4693
+[Info]: Unbiased_Aff_prec_bias is not set. Calculate by sample bias. The time-cost will be higher than setting it manually. You can set it by calling `cal_unbiased_aff_prec_bias` function.
+[Info]: Unbiased_Aff_prec_bias is set to 0.5083 by sampling 3 times.
+[Info]: Unbiased_Aff_prec_bias sampling results: [0.4964, 0.5052, 0.5232]
+[Info]: Unbiased_Aff_prec_bias is not set. Calculate by sample bias. The time-cost will be higher than setting it manually. You can set it by calling `cal_unbiased_aff_prec_bias` function.
+[Info]: Unbiased_Aff_prec_bias is set to 0.5220 by sampling 3 times.
+[Info]: Unbiased_Aff_prec_bias sampling results: [0.5106, 0.5206, 0.5349]
+Metric: UAff-F1, Test: 0.4561, All Test: 0.4934, Left Test: 0.4566
+Metric: AUC-ROC, Test: 0.8696, All Test: 0.9564, Left Test: 0.8696
+Metric: VUS-PR, Test: 0.9643, All Test: 0.9773, Left Test: 0.9643
+Result saved to:  /public/home/202220143416/projects/STAND/logs/supervised_robust_exp.csv
+Config: --------------------------------
+Namespace(d_model=32, num_layers=1, bidirectional=0, model_name='RF', task_name='supervised', win_size=3, step_size=1, batch_size=128, epochs=10, lr=0.001, model_saving_path='/public/home/202220143416/projects/STAND/model_saving', dataset_path='/public/home/202220143416/projects/FTSAD/datasets', dataset_name='NIPS_TS_Water', if_save=0, index=0, train_test_split=0.5, anomaly_ratio=0.1, train_split_max=0.3, metric_list=['CCE', 'F1', 'Aff-F1', 'UAff-F1', 'AUC-ROC', 'VUS-PR'], quantile=0.95, noise_prob=0.01)
+Log will be saved to:  /public/home/202220143416/projects/STAND/logs
+test: (69261, 9)
+train: (69260, 9)
+(34630, 9) (34630,)
+(34628, 27) (34628,)
+Metric: CCE, Test: 0.5062, All Test: 0.8816, Left Test: 0.5062
+Metric: F1, Test: 0.0789, All Test: 0.3442, Left Test: 0.0789
+Metric: Aff-F1, Test: 0.7878, All Test: 0.9288, Left Test: 0.7878
+[Info]: Unbiased_Aff_prec_bias is not set. Calculate by sample bias. The time-cost will be higher than setting it manually. You can set it by calling `cal_unbiased_aff_prec_bias` function.
+[Info]: Unbiased_Aff_prec_bias is set to 0.5047 by sampling 3 times.
+[Info]: Unbiased_Aff_prec_bias sampling results: [0.5054, 0.5121, 0.4966]
+[Info]: Unbiased_Aff_prec_bias is not set. Calculate by sample bias. The time-cost will be higher than setting it manually. You can set it by calling `cal_unbiased_aff_prec_bias` function.
+[Info]: Unbiased_Aff_prec_bias is set to 0.4826 by sampling 3 times.
+[Info]: Unbiased_Aff_prec_bias sampling results: [0.5301, 0.4704, 0.4474]
+[Info]: Unbiased_Aff_prec_bias is not set. Calculate by sample bias. The time-cost will be higher than setting it manually. You can set it by calling `cal_unbiased_aff_prec_bias` function.
+[Info]: Unbiased_Aff_prec_bias is set to 0.5005 by sampling 3 times.
+[Info]: Unbiased_Aff_prec_bias sampling results: [0.5074, 0.5062, 0.4879]
+Metric: UAff-F1, Test: 0.4535, All Test: 0.8527, Left Test: 0.4605
+Metric: AUC-ROC, Test: 0.9692, All Test: 0.9979, Left Test: 0.9692
+Metric: VUS-PR, Test: 0.2055, All Test: 0.9213, Left Test: 0.2055
+Result saved to:  /public/home/202220143416/projects/STAND/logs/supervised_robust_exp.csv
+Config: --------------------------------
+Namespace(d_model=32, num_layers=1, bidirectional=0, model_name='SVM', task_name='supervised', win_size=3, step_size=1, batch_size=128, epochs=10, lr=0.001, model_saving_path='/public/home/202220143416/projects/STAND/model_saving', dataset_path='/public/home/202220143416/projects/FTSAD/datasets', dataset_name='PSM', if_save=0, index=0, train_test_split=0.5, anomaly_ratio=0.1, train_split_max=0.3, metric_list=['CCE', 'F1', 'Aff-F1', 'UAff-F1', 'AUC-ROC', 'VUS-PR'], quantile=0.95, noise_prob=0.01)
+Log will be saved to:  /public/home/202220143416/projects/STAND/logs
+train: (132481, 25)
+test: (87841, 25)
+(43920, 25) (43920,)
+(43918, 75) (43918,)
+Metric: CCE, Test: 0.0794, All Test: 0.1872, Left Test: 0.0794
+Metric: F1, Test: 0.1086, All Test: 0.2994, Left Test: 0.1086
+Metric: Aff-F1, Test: 0.5849, All Test: 0.2680, Left Test: 0.5849
+[Info]: Unbiased_Aff_prec_bias is not set. Calculate by sample bias. The time-cost will be higher than setting it manually. You can set it by calling `cal_unbiased_aff_prec_bias` function.
+[Info]: Unbiased_Aff_prec_bias is set to 0.5342 by sampling 3 times.
+[Info]: Unbiased_Aff_prec_bias sampling results: [0.5242, 0.5314, 0.5471]
+[Info]: Unbiased_Aff_prec_bias is not set. Calculate by sample bias. The time-cost will be higher than setting it manually. You can set it by calling `cal_unbiased_aff_prec_bias` function.
+[Info]: Unbiased_Aff_prec_bias is set to 0.5294 by sampling 3 times.
+[Info]: Unbiased_Aff_prec_bias sampling results: [0.499, 0.5461, 0.5431]
+[Info]: Unbiased_Aff_prec_bias is not set. Calculate by sample bias. The time-cost will be higher than setting it manually. You can set it by calling `cal_unbiased_aff_prec_bias` function.
+[Info]: Unbiased_Aff_prec_bias is set to 0.5636 by sampling 3 times.
+[Info]: Unbiased_Aff_prec_bias sampling results: [0.5272, 0.5594, 0.6041]
+Metric: UAff-F1, Test: 0.2936, All Test: 0.2620, Left Test: 0.2315
+Metric: AUC-ROC, Test: 0.6875, All Test: 0.9052, Left Test: 0.6875
+Metric: VUS-PR, Test: 0.4555, All Test: 0.7622, Left Test: 0.4555
+Result saved to:  /public/home/202220143416/projects/STAND/logs/supervised_robust_exp.csv
+Config: --------------------------------
+Namespace(d_model=32, num_layers=1, bidirectional=0, model_name='SVM', task_name='supervised', win_size=3, step_size=1, batch_size=128, epochs=10, lr=0.001, model_saving_path='/public/home/202220143416/projects/STAND/model_saving', dataset_path='/public/home/202220143416/projects/FTSAD/datasets', dataset_name='SWAT', if_save=0, index=0, train_test_split=0.5, anomaly_ratio=0.1, train_split_max=0.3, metric_list=['CCE', 'F1', 'Aff-F1', 'UAff-F1', 'AUC-ROC', 'VUS-PR'], quantile=0.95, noise_prob=0.01)
+Log will be saved to:  /public/home/202220143416/projects/STAND/logs
+test: (449919, 50)
+train: (495000, 50)
+(224959, 50) (224959,)
+(224957, 150) (224957,)
+Metric: CCE, Test: 0.2234, All Test: 0.2423, Left Test: 0.2234
+Metric: F1, Test: 0.1233, All Test: 0.3478, Left Test: 0.1233
+Metric: Aff-F1, Test: 0.7763, All Test: 0.8283, Left Test: 0.7763
+[Info]: Unbiased_Aff_prec_bias is not set. Calculate by sample bias. The time-cost will be higher than setting it manually. You can set it by calling `cal_unbiased_aff_prec_bias` function.
+[Info]: Unbiased_Aff_prec_bias is set to 0.5462 by sampling 3 times.
+[Info]: Unbiased_Aff_prec_bias sampling results: [0.5415, 0.5538, 0.5434]
+[Info]: Unbiased_Aff_prec_bias is not set. Calculate by sample bias. The time-cost will be higher than setting it manually. You can set it by calling `cal_unbiased_aff_prec_bias` function.
+[Info]: Unbiased_Aff_prec_bias is set to 0.5289 by sampling 3 times.
+[Info]: Unbiased_Aff_prec_bias sampling results: [0.55, 0.5174, 0.5193]
+[Info]: Unbiased_Aff_prec_bias is not set. Calculate by sample bias. The time-cost will be higher than setting it manually. You can set it by calling `cal_unbiased_aff_prec_bias` function.
+[Info]: Unbiased_Aff_prec_bias is set to 0.5404 by sampling 3 times.
+[Info]: Unbiased_Aff_prec_bias sampling results: [0.541, 0.547, 0.5332]
+Metric: UAff-F1, Test: 0.6520, All Test: 0.7868, Left Test: 0.6553
+Metric: AUC-ROC, Test: 0.9227, All Test: 0.9481, Left Test: 0.9227
+Metric: VUS-PR, Test: 0.8304, All Test: 0.8144, Left Test: 0.8304
+Result saved to:  /public/home/202220143416/projects/STAND/logs/supervised_robust_exp.csv
+Config: --------------------------------
+Namespace(d_model=32, num_layers=1, bidirectional=0, model_name='SVM', task_name='supervised', win_size=3, step_size=1, batch_size=128, epochs=10, lr=0.001, model_saving_path='/public/home/202220143416/projects/STAND/model_saving', dataset_path='/public/home/202220143416/projects/FTSAD/datasets', dataset_name='WADI', if_save=0, index=0, train_test_split=0.5, anomaly_ratio=0.1, train_split_max=0.3, metric_list=['CCE', 'F1', 'Aff-F1', 'UAff-F1', 'AUC-ROC', 'VUS-PR'], quantile=0.95, noise_prob=0.01)
+Log will be saved to:  /public/home/202220143416/projects/STAND/logs
+test: (34561, 122)
+train: (241921, 122)
+(17280, 122) (17280,)
+(17278, 366) (17278,)
+Metric: CCE, Test: 0.0534, All Test: 0.2993, Left Test: 0.0534
+Metric: F1, Test: 0.2912, All Test: 0.7378, Left Test: 0.2912
+Metric: Aff-F1, Test: 0.7864, All Test: 0.8930, Left Test: 0.7864
+[Info]: Unbiased_Aff_prec_bias is not set. Calculate by sample bias. The time-cost will be higher than setting it manually. You can set it by calling `cal_unbiased_aff_prec_bias` function.
+[Info]: Unbiased_Aff_prec_bias is set to 0.5496 by sampling 3 times.
+[Info]: Unbiased_Aff_prec_bias sampling results: [0.3649, 0.5912, 0.6927]
+[Info]: Unbiased_Aff_prec_bias is not set. Calculate by sample bias. The time-cost will be higher than setting it manually. You can set it by calling `cal_unbiased_aff_prec_bias` function.
+[Info]: Unbiased_Aff_prec_bias is set to 0.5238 by sampling 3 times.
+[Info]: Unbiased_Aff_prec_bias sampling results: [0.5343, 0.5628, 0.4743]
+[Info]: Unbiased_Aff_prec_bias is not set. Calculate by sample bias. The time-cost will be higher than setting it manually. You can set it by calling `cal_unbiased_aff_prec_bias` function.
+[Info]: Unbiased_Aff_prec_bias is set to 0.5780 by sampling 3 times.
+[Info]: Unbiased_Aff_prec_bias sampling results: [0.473, 0.6126, 0.6484]
+Metric: UAff-F1, Test: 0.4076, All Test: 0.7882, Left Test: 0.3430
+Metric: AUC-ROC, Test: 0.6928, All Test: 0.9044, Left Test: 0.6928
+Metric: VUS-PR, Test: 0.2866, All Test: 0.8353, Left Test: 0.2866
+Result saved to:  /public/home/202220143416/projects/STAND/logs/supervised_robust_exp.csv
+Config: --------------------------------
+Namespace(d_model=32, num_layers=1, bidirectional=0, model_name='SVM', task_name='supervised', win_size=3, step_size=1, batch_size=128, epochs=10, lr=0.001, model_saving_path='/public/home/202220143416/projects/STAND/model_saving', dataset_path='/public/home/202220143416/projects/FTSAD/datasets', dataset_name='NIPS_TS_Swan', if_save=0, index=0, train_test_split=0.5, anomaly_ratio=0.1, train_split_max=0.3, metric_list=['CCE', 'F1', 'Aff-F1', 'UAff-F1', 'AUC-ROC', 'VUS-PR'], quantile=0.95, noise_prob=0.01)
+Log will be saved to:  /public/home/202220143416/projects/STAND/logs
+test: (60000, 38)
+train: (60000, 38)
+(30000, 38) (30000,)
+(29998, 114) (29998,)
+Metric: CCE, Test: 0.0964, All Test: 0.1990, Left Test: 0.0964
+Metric: F1, Test: 0.1638, All Test: 0.2583, Left Test: 0.1638
+Metric: Aff-F1, Test: 0.2649, All Test: 0.5178, Left Test: 0.2649
+[Info]: Unbiased_Aff_prec_bias is not set. Calculate by sample bias. The time-cost will be higher than setting it manually. You can set it by calling `cal_unbiased_aff_prec_bias` function.
+[Info]: Unbiased_Aff_prec_bias is set to 0.5421 by sampling 3 times.
+[Info]: Unbiased_Aff_prec_bias sampling results: [0.5547, 0.5464, 0.5254]
+[Info]: Unbiased_Aff_prec_bias is not set. Calculate by sample bias. The time-cost will be higher than setting it manually. You can set it by calling `cal_unbiased_aff_prec_bias` function.
+[Info]: Unbiased_Aff_prec_bias is set to 0.5110 by sampling 3 times.
+[Info]: Unbiased_Aff_prec_bias sampling results: [0.519, 0.5027, 0.5111]
+Metric: UAff-F1, Test: 0.2536, All Test: 0.5153, Left Test: 0.2536
+Metric: AUC-ROC, Test: 0.8026, All Test: 0.8765, Left Test: 0.8026
+Metric: VUS-PR, Test: 0.9699, All Test: 0.9712, Left Test: 0.9699
+Result saved to:  /public/home/202220143416/projects/STAND/logs/supervised_robust_exp.csv
+Config: --------------------------------
+Namespace(d_model=32, num_layers=1, bidirectional=0, model_name='SVM', task_name='supervised', win_size=3, step_size=1, batch_size=128, epochs=10, lr=0.001, model_saving_path='/public/home/202220143416/projects/STAND/model_saving', dataset_path='/public/home/202220143416/projects/FTSAD/datasets', dataset_name='NIPS_TS_Water', if_save=0, index=0, train_test_split=0.5, anomaly_ratio=0.1, train_split_max=0.3, metric_list=['CCE', 'F1', 'Aff-F1', 'UAff-F1', 'AUC-ROC', 'VUS-PR'], quantile=0.95, noise_prob=0.01)
+Log will be saved to:  /public/home/202220143416/projects/STAND/logs
+test: (69261, 9)
+train: (69260, 9)
+(34630, 9) (34630,)
+(34628, 27) (34628,)
+Metric: CCE, Test: 0.2254, All Test: 0.4987, Left Test: 0.2254
+Metric: F1, Test: 0.0597, All Test: 0.3191, Left Test: 0.0597
+Metric: Aff-F1, Test: 0.8500, All Test: 0.9752, Left Test: 0.8500
+[Info]: Unbiased_Aff_prec_bias is not set. Calculate by sample bias. The time-cost will be higher than setting it manually. You can set it by calling `cal_unbiased_aff_prec_bias` function.
+[Info]: Unbiased_Aff_prec_bias is set to 0.4938 by sampling 3 times.
+[Info]: Unbiased_Aff_prec_bias sampling results: [0.4955, 0.4931, 0.4928]
+[Info]: Unbiased_Aff_prec_bias is not set. Calculate by sample bias. The time-cost will be higher than setting it manually. You can set it by calling `cal_unbiased_aff_prec_bias` function.
+[Info]: Unbiased_Aff_prec_bias is set to 0.5151 by sampling 3 times.
+[Info]: Unbiased_Aff_prec_bias sampling results: [0.5728, 0.4927, 0.48]
+[Info]: Unbiased_Aff_prec_bias is not set. Calculate by sample bias. The time-cost will be higher than setting it manually. You can set it by calling `cal_unbiased_aff_prec_bias` function.
+[Info]: Unbiased_Aff_prec_bias is set to 0.4932 by sampling 3 times.
+[Info]: Unbiased_Aff_prec_bias sampling results: [0.5008, 0.4867, 0.4922]
+Metric: UAff-F1, Test: 0.6530, All Test: 0.9476, Left Test: 0.6535
+Metric: AUC-ROC, Test: 0.9299, All Test: 0.9780, Left Test: 0.9299
+Metric: VUS-PR, Test: 0.0462, All Test: 0.8377, Left Test: 0.0462
+Result saved to:  /public/home/202220143416/projects/STAND/logs/supervised_robust_exp.csv
+Config: --------------------------------
+Namespace(d_model=32, num_layers=1, bidirectional=0, model_name='AdaBoost', task_name='supervised', win_size=3, step_size=1, batch_size=128, epochs=10, lr=0.001, model_saving_path='/public/home/202220143416/projects/STAND/model_saving', dataset_path='/public/home/202220143416/projects/FTSAD/datasets', dataset_name='PSM', if_save=0, index=0, train_test_split=0.5, anomaly_ratio=0.1, train_split_max=0.3, metric_list=['CCE', 'F1', 'Aff-F1', 'UAff-F1', 'AUC-ROC', 'VUS-PR'], quantile=0.95, noise_prob=0.01)
+Log will be saved to:  /public/home/202220143416/projects/STAND/logs
+train: (132481, 25)
+test: (87841, 25)
+if_save False None
+(43920, 25) (43920,)
+(43918, 75) (43918,)
+Traceback (most recent call last):
+  File "/public/home/202220143416/projects/STAND/src/exp/supervised_robust.py", line 59, in <module>
+    test_score, test_all_score = run_Supervise_AD(config.model_name, train_y, train_labels, test_y, all_test_y, **config_dict_tmp)
+  File "/public/home/202220143416/projects/STAND/src/utils/model_wrapper.py", line 58, in run_Supervise_AD
+    raise e
+  File "/public/home/202220143416/projects/STAND/src/utils/model_wrapper.py", line 55, in run_Supervise_AD
+    results = function_to_call(data_train, data_train_labels, data_test, data_all_test, **kwargs)
+  File "/public/home/202220143416/projects/STAND/src/utils/model_wrapper.py", line 111, in run_AdaBoost_S
+    clf.fit(data_train, data_train_labels)
+  File "/public/home/202220143416/projects/STAND/src/models/supervised/core_ml_wrap.py", line 20, in fit
+    self.detector_.fit(X_windows, y)
+  File "/public/home/202220143416/miniconda3/envs/torch310/lib/python3.10/site-packages/sklearn/base.py", line 1358, in wrapper
+    estimator._validate_params()
+  File "/public/home/202220143416/miniconda3/envs/torch310/lib/python3.10/site-packages/sklearn/base.py", line 471, in _validate_params
+    validate_parameter_constraints(
+  File "/public/home/202220143416/miniconda3/envs/torch310/lib/python3.10/site-packages/sklearn/utils/_param_validation.py", line 98, in validate_parameter_constraints
+    raise InvalidParameterError(
+sklearn.utils._param_validation.InvalidParameterError: The 'algorithm' parameter of AdaBoostClassifier must be a str among {'SAMME'}. Got 'SAMME.R' instead.
+Current project path:  /public/home/202220143416/projects/STAND/src/exp
+Current working directory:  /public/home/202220143416/projects/STAND/src/exp
+Running experiment for model: RF, dataset: PSM
+Running experiment for model: RF, dataset: SWAT
+Running experiment for model: RF, dataset: WADI
+Running experiment for model: RF, dataset: NIPS_TS_Swan
+Running experiment for model: RF, dataset: NIPS_TS_Water
+Running experiment for model: SVM, dataset: PSM
+Running experiment for model: SVM, dataset: SWAT
+Running experiment for model: SVM, dataset: WADI
+Running experiment for model: SVM, dataset: NIPS_TS_Swan
+Running experiment for model: SVM, dataset: NIPS_TS_Water
+Running experiment for model: AdaBoost, dataset: PSM
+Traceback (most recent call last):
+  File "/public/home/202220143416/projects/STAND/src/scripts/run_supervised_robust.py", line 89, in <module>
+    run_baselines(model_list, dataset_list, extra_config, train_test_split, noise_prob=noise_prob)
+  File "/public/home/202220143416/projects/STAND/src/scripts/run_supervised_robust.py", line 61, in run_baselines
+    raise RuntimeError(f'Error occurred while running {model} on {dataset}')
+RuntimeError: Error occurred while running AdaBoost on PSM
