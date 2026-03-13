@@ -19,7 +19,7 @@ logs/post
 
 nohup.out
 
-logs/log_file
+/logs/log_file
 
 .cce
 
