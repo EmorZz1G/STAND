@@ -9,10 +9,12 @@ print('Current working directory: ', os.getcwd())
 
 # model_list = ['RF', 'SVM', 'AdaBoost', 'ExtraTrees', 'LightGBM']
 model_list = ['RF', 'SVM', 'AdaBoost', 'ExtraTrees', 'LightGBM', 'STAND']
+model_list = ['RF', 'SVM', 'AdaBoost', 'ExtraTrees', 'LightGBM', 'STAND']
 # model_list = ['SVM', 'AdaBoost', 'ExtraTrees', 'LightGBM']
 # model_list = ['ExtraTrees', 'LightGBM']
 # model_list = ['LightGBM']
 dataset_list = ['PSM', 'SWAT', 'WADI', 'NIPS_TS_Swan', 'NIPS_TS_Water']#, 'UCR']
+# dataset_list = ['PSM', 'WADI', 'NIPS_TS_Swan', 'NIPS_TS_Water']#, 'UCR']
 # dataset_list = ['PSM', 'WADI', 'NIPS_TS_Swan', 'NIPS_TS_Water']#, 'UCR']
 # dataset_list = ['SWAT']#, 'WADI', 'NIPS_TS_Swan', 'NIPS_TS_Water']#, 'UCR']
 # dataset_list = ['SWAT', 'WADI', 'NIPS_TS_Swan', 'NIPS_TS_Water']#, 'UCR']
@@ -97,6 +99,9 @@ def run_stand(dataset_list, train_test_split=0.5, win_size=32, noise_prob=0.0):
             subprocess.run(cmd)
 
 if __name__ == '__main__':
+    # 设置可用CUDA
+    import os
+    os.environ['CUDA_VISIBLE_DEVICES'] = '1'
     # 设置可用CUDA
     import os
     os.environ['CUDA_VISIBLE_DEVICES'] = '1'
