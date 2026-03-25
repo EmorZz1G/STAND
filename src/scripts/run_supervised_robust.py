@@ -8,11 +8,12 @@ os.chdir(cur_proj)
 print('Current working directory: ', os.getcwd())
 
 # model_list = ['RF', 'SVM', 'AdaBoost', 'ExtraTrees', 'LightGBM']
-model_list = ['RF', 'SVM', 'AdaBoost', 'ExtraTrees', 'LightGBM']
+model_list = ['RF', 'SVM', 'AdaBoost', 'ExtraTrees', 'LightGBM', 'STAND']
 # model_list = ['SVM', 'AdaBoost', 'ExtraTrees', 'LightGBM']
 # model_list = ['ExtraTrees', 'LightGBM']
 # model_list = ['LightGBM']
 dataset_list = ['PSM', 'SWAT', 'WADI', 'NIPS_TS_Swan', 'NIPS_TS_Water']#, 'UCR']
+# dataset_list = ['PSM', 'WADI', 'NIPS_TS_Swan', 'NIPS_TS_Water']#, 'UCR']
 # dataset_list = ['SWAT']#, 'WADI', 'NIPS_TS_Swan', 'NIPS_TS_Water']#, 'UCR']
 # dataset_list = ['SWAT', 'WADI', 'NIPS_TS_Swan', 'NIPS_TS_Water']#, 'UCR']
 # dataset_list = ['WADI', 'NIPS_TS_Swan', 'NIPS_TS_Water']#, 'UCR']
@@ -96,6 +97,9 @@ def run_stand(dataset_list, train_test_split=0.5, win_size=32, noise_prob=0.0):
             subprocess.run(cmd)
 
 if __name__ == '__main__':
+    # 设置可用CUDA
+    import os
+    os.environ['CUDA_VISIBLE_DEVICES'] = '1'
     # train_test_split_list = [0.1, 0.2, 0.3, 0.4, 0.5]
     # train_test_split_list = [0.2, 0.3, 0.4, 0.5]
     # train_test_split_list = [0.3, 0.4, 0.5]
@@ -107,12 +111,17 @@ if __name__ == '__main__':
     from itertools import product
     task_list_generator = product(model_list, dataset_list, noise_prob_list)
     task_list_generator = list(task_list_generator)
+
+    print(len(task_list_generator))
     #  nohup python src/scripts/run_supervised_robust.py 2>&1 | tee logs/log_file/robust2.txt &
     run_task = 0
     train_test_split = 0.5
-    parallel_jobs = 10
+    parallel_jobs = -1
+    # random
+    import numpy as np
+    np.random.shuffle(task_list_generator)
 
-    if parallel_jobs != 0:
+    if parallel_jobs > 0:
         import concurrent.futures
         with concurrent.futures.ThreadPoolExecutor(max_workers=parallel_jobs) as executor:
             futures = []
@@ -120,7 +129,7 @@ if __name__ == '__main__':
                 model = [model]
                 dataset = [dataset]
                 if check_exist(model[0], dataset[0], noise_prob):
-                    print(f'Experiment for model: {model[0]}, dataset: {dataset[0]} with noise_prob: {noise_prob} already exists. Skipping...')
+                    # print(f'Experiment for model: {model[0]}, dataset: {dataset[0]} with noise_prob: {noise_prob} already exists. Skipping...')
                     continue
                 if model[0] == 'STAND':
                     futures.append(executor.submit(run_stand, dataset, train_test_split, noise_prob=noise_prob))
@@ -135,8 +144,22 @@ if __name__ == '__main__':
                     future.result()
                 except Exception as e:
                     print(f"Error occurred during execution: {e}")
-            
-    else:
+    elif parallel_jobs == -1:
+        for model, dataset, noise_prob in task_list_generator:
+            model = [model]
+            dataset = [dataset]
+            if check_exist(model[0], dataset[0], noise_prob):
+                # print(f'Experiment for model: {model[0]}, dataset: {dataset[0]} with noise_prob: {noise_prob} already exists. Skipping...')
+                continue
+            else:
+                print(f'Experiment for model: {model[0]}, dataset: {dataset[0]} with noise_prob: {noise_prob}')
+            if model[0] == 'STAND':
+                run_stand(dataset, train_test_split, noise_prob=noise_prob)
+            else:
+                run_baselines(model, dataset, extra_config, train_test_split, noise_prob=noise_prob)
+
+                
+    elif parallel_jobs==0:
         for noise_prob in noise_prob_list:
             if run_task == 0:
                 run_baselines(model_list, dataset_list, extra_config, train_test_split, noise_prob=noise_prob)
