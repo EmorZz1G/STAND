@@ -233,7 +233,7 @@ class STAND(BaseDetector):
             torch.tensor(X_seq, dtype=torch.float32),
             torch.tensor(y_seq, dtype=torch.float32),
         )
-        loader = DataLoader(dataset, batch_size=self.batch_size, shuffle=True, num_workers=8)
+        loader = DataLoader(dataset, batch_size=self.batch_size, shuffle=True)
 
         self._model = self._build_model(input_dim=feature_dim)
         optimizer = self._make_optimizer(self._model)
