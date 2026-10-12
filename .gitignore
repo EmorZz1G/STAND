@@ -8,6 +8,12 @@ post
 
 logs/post
 
+/tests/bkup
+
+/src/scripts/run_supervised_robust_*.py
+/src/exp/supervised_robust_*.py
+
+logs copy
 
 # C extensions
 *.so

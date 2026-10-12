@@ -773,7 +773,7 @@ class EarlyStopping:
         self.counter = 0
         self.best_score = None
         self.early_stop = False
-        self.val_loss_min = np.Inf
+        self.val_loss_min = np.inf
         self.delta = delta
 
     def __call__(self, val_loss, model):
@@ -1103,7 +1103,7 @@ class CATCH(BaseDetector):
             epoch_time = time.time()
             self.model.train()
 
-            step = min(int(len(self.train_data_loader) / 10), 100)
+            step = max(1, min(int(len(self.train_data_loader) / 10), 100))
             for i, (input, target) in enumerate(self.train_data_loader):
                 iter_count += 1
                 self.optimizer.zero_grad()

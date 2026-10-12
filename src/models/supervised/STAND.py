@@ -21,7 +21,7 @@ from ...utils.utility import zscore
 from sklearn.metrics import precision_recall_curve
 
 class _StandNet(nn.Module):
-    def __init__(self, input_dim, d_model=32, num_layers=1, bidirectional=False, use_embedding=True):
+    def __init__(self, input_dim, d_model=32, num_layers=1, bidirectional=False, use_embedding=True, module=None):
         super(_StandNet, self).__init__()
         if not use_embedding:
             self.emb = nn.Identity()
@@ -38,19 +38,36 @@ class _StandNet(nn.Module):
             d_model_in = d_model
         self.bidirectional = bidirectional
         self.num_layers = num_layers
+        self.module = module
         if num_layers == 0:
             self.enc = nn.Identity()
             proj_in = d_model_in
         else:
             assert num_layers > 0
-            self.enc = nn.LSTM(d_model_in, d_model, num_layers, batch_first=True, bidirectional=(bidirectional==1 or bidirectional==True))
-            proj_in = d_model * (2 if bidirectional==True or bidirectional==1 else 1)
+
+            if self.module is None:
+                self.enc = nn.LSTM(d_model_in, d_model, num_layers, batch_first=True, bidirectional=(bidirectional==1 or bidirectional==True))
+                proj_in = d_model * (2 if bidirectional==True or bidirectional==1 else 1)
+            elif self.module == 'Attn':
+                self.enc = nn.ModuleList([nn.TransformerEncoderLayer(d_model=d_model, nhead=4, dim_feedforward=d_model*2, batch_first=True) for _ in range(num_layers)])
+                proj_in = d_model
+            elif self.module == 'GRU':
+                self.enc = nn.GRU(d_model_in, d_model, num_layers, batch_first=True, bidirectional=(bidirectional==1 or bidirectional==True))
+                proj_in = d_model * (2 if bidirectional==True or bidirectional==1 else 1)
+            
+
         self.clf = nn.Linear(proj_in, 1)
 
     def forward(self, x):
         x = self.emb(x)
         if self.num_layers > 0:
-            x, _ = self.enc(x)
+            if self.module is None:
+                x, _ = self.enc(x)
+            elif self.module == 'Attn':
+                for layer in self.enc:
+                    x = layer(x)
+            elif self.module == 'GRU':
+                x, _ = self.enc(x)
         else:
             x = self.enc(x)
         x = self.clf(x).squeeze(-1)
@@ -88,7 +105,7 @@ class STAND(BaseDetector):
     def __init__(self, win_size=32, contamination=0.1, normalize=False,
                  epochs=10, batch_size=128, lr=1e-3, optimizer='adam',
                  d_model=32, num_layers=1, bidirectional=False, device=None,
-                 debug=0,
+                 debug=0, module=None,
                  **kwargs):
 
         self.win_size = win_size
@@ -109,11 +126,12 @@ class STAND(BaseDetector):
         self.if_save = kwargs.get('if_save', 0)
         self.model_saving_path = kwargs.get('model_saving_path', './saved_models')
         self.model_saving_path = pathlib.Path(self.model_saving_path)
+        self.module = module
         print(kwargs)
 
     def _build_model(self, input_dim):
         model = _StandNet(input_dim=input_dim, d_model=self.d_model,
-                          num_layers=self.num_layers, bidirectional=self.bidirectional)
+                          num_layers=self.num_layers, bidirectional=self.bidirectional, module=self.module)
         return model.to(self.device)
 
     def _make_optimizer(self, model):
@@ -238,6 +256,7 @@ class STAND(BaseDetector):
         self._model = self._build_model(input_dim=feature_dim)
         optimizer = self._make_optimizer(self._model)
         criterion = nn.BCEWithLogitsLoss()
+        # criterion = nn.BCEWithLogitsLoss(pos_weight=torch.tensor([1]).to(self.device)) # for abl
 
         self._model.train()
         from tqdm import tqdm

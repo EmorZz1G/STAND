@@ -1,0 +1,8 @@
+Model,Type,Train Peak VRAM (MB),Infer Peak VRAM (MB),Train RAM Delta (MB),Infer RAM Delta (MB),Train Time / Epoch (s),Total Train Time (s),Train Throughput (samples/s),Infer Total Time (s),Infer Latency (ms/sample),Infer Throughput (samples/s)
+STAND32,Deep Learning (GPU),44.96,38.32,435.88,11.8,1.627,4.88,26995.6,0.4,0.0045,219887.5
+STAND100,Deep Learning (GPU),86.46,65.88,426.65,7.69,1.956,5.87,22452.9,0.77,0.0088,113693.4
+AE,Deep Learning (GPU),17.68,17.39,110.21,16.75,0.998,2.99,44020.0,0.91,0.0103,96697.5
+AnomalyTransformer,Deep Learning (GPU),5497.12,1032.48,408.55,49.0,34.209,102.63,1283.9,21.08,0.24,4167.3
+CATCH,Deep Learning (GPU),2231.73,1362.09,261.14,0.0,33.33,99.99,1317.7,0.67,0.0076,131980.7
+PCA,Machine Learning (CPU),0.0,0.0,3.91,0.36,N/A,30.62,1434.5,48.14,0.548,1824.9
+ExtraTrees,Machine Learning (CPU),0.0,0.0,192.52,39.07,N/A,0.27,160352.0,0.11,0.0013,798122.8

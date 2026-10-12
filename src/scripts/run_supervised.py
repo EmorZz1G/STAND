@@ -9,10 +9,12 @@ print('Current working directory: ', os.getcwd())
 
 # model_list = ['RF', 'SVM', 'AdaBoost', 'ExtraTrees', 'LightGBM']
 model_list = ['RF', 'SVM', 'AdaBoost', 'ExtraTrees', 'LightGBM']
+# model_list = ['AdaBoost', 'ExtraTrees', 'LightGBM']
 # model_list = ['SVM', 'AdaBoost', 'ExtraTrees', 'LightGBM']
 # model_list = ['ExtraTrees', 'LightGBM']
 # model_list = ['LightGBM']
 dataset_list = ['PSM', 'SWAT', 'WADI', 'NIPS_TS_Swan', 'NIPS_TS_Water']#, 'UCR']
+dataset_list = ['NIPS_TS_Water']#, 'UCR']
 # dataset_list = ['SWAT']#, 'WADI', 'NIPS_TS_Swan', 'NIPS_TS_Water']#, 'UCR']
 # dataset_list = ['SWAT', 'WADI', 'NIPS_TS_Swan', 'NIPS_TS_Water']#, 'UCR']
 # dataset_list = ['WADI', 'NIPS_TS_Swan', 'NIPS_TS_Water']#, 'UCR']
@@ -73,7 +75,9 @@ def run_stand(dataset_list, train_test_split=0.5, win_size=32):
             print(f'Running experiment for model: STAND, dataset: {dataset}')
             cmd = ['python', 'supervised.py', '--model_name', 'STAND', '--dataset_name', dataset,
                    '--task_name', 'supervised',
-                   '--train_test_split', str(train_test_split), '--win_size', str(win_size)]
+                   '--train_test_split', str(train_test_split), '--win_size', str(win_size),
+                   '--d_model','128','--num_layers','3','--bidirectional','1'
+                   ]
             subprocess.run(cmd)
 
 if __name__ == '__main__':
@@ -84,8 +88,12 @@ if __name__ == '__main__':
     run_task = 0
     for train_test_split in train_test_split_list:
         if run_task == 0:
-            run_baselines(model_list, dataset_list, extra_config, train_test_split)
-            # run_stand(dataset_list, train_test_split)
+            # run_baselines(model_list, dataset_list, extra_config, train_test_split)
+            # run_baselines(model_list, dataset_list, extra_config, train_test_split)
+            # run_baselines(model_list, dataset_list, extra_config, train_test_split)
+            win=64
+            for i in range(5):
+                run_stand(dataset_list, train_test_split,win)
         else:
             for task in task_list:
                 model_list_ = task['model_list']

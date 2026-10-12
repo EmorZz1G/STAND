@@ -46,19 +46,19 @@ test_score = run_Unsupervise_AD(config.model_name, test_y, **config_dict_tmp)
 
 
 
-cnt = 0
-while True:
-    test_pred = metricor.get_pred(test_score, quantile=config.quantile)
-    print(sum(test_pred))
-    if sum(test_pred) > 0:
-        break
-    else:
-        cnt += 1
-        if config.quantile - 0.05*cnt < 0:
-            raise ValueError(f'Quantile adjustment out of range!, model: {config.model_name}, dataset: {config.dataset_name}, index: {config.index}')
+# cnt = 0
+# while True:
+#     test_pred = metricor.get_pred(test_score, quantile=config.quantile)
+#     print(sum(test_pred))
+#     if sum(test_pred) > 0:
+#         break
+#     else:
+#         cnt += 1
+#         if config.quantile - 0.05*cnt < 0:
+#             raise ValueError(f'Quantile adjustment out of range!, model: {config.model_name}, dataset: {config.dataset_name}, index: {config.index}')
         
-        result1['quantile'] = config.quantile - 0.05*cnt
-        print('Adjust quantile to: ', config.quantile - 0.05*cnt)
+#         result1['quantile'] = config.quantile - 0.05*cnt
+#         print('Adjust quantile to: ', config.quantile - 0.05*cnt)
 
 
 test_left_score = test_score.copy()[-left_len:]
@@ -77,15 +77,15 @@ while True:
         print('Adjust quantile to: ', config.quantile - 0.05*cnt)
 
 for metric in config.metric_list:
-    val1 = metricor.metric_by_name(metric, test_labels, test_score, test_pred)
+    # val1 = metricor.metric_by_name(metric, test_labels, test_score, test_pred)
     val3 = metricor.metric_by_name(metric, test_left_labels, test_left_score, test_left_pred)
-    result1[metric] = val1
+    # result1[metric] = val1
     result3.update({metric: val3})
-    print(f'Metric {metric}, All Test: {val1:.4f} Left Test: {val3:.4f}')
+    # print(f'Metric {metric}, All Test: {val1:.4f} Left Test: {val3:.4f}')
 
 
 import pandas as pd
-df = pd.DataFrame([result1])
+# df = pd.DataFrame([result1])
 df3 = pd.DataFrame([result3])
 # if not logs_file_pth.exists():
 #     df.to_csv(logs_file_pth, index=False)

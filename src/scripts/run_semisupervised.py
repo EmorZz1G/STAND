@@ -20,8 +20,16 @@ model_list = ['OmniAnomaly',
 # model_list = ['M2N2']
 # model_list = ['LFTSAD']
 # model_list = ['CATCH']
+model_list = [  'CNN', 'LSTMAD', 'TranAD', 'USAD', 'OmniAnomaly', 
+                        'AnomalyTransformer','M2N2','CATCH','AutoEncoder']
+
+# model_list = [  'AutoEncoder', 
+                        # 'AnomalyTransformer','M2N2','CATCH','AutoEncoder']
+
+model_list = ['STAND_UNCLF', 'STAND_UNCLF_Attn', 'STAND_UNCLF_GRU']
 
 dataset_list = ['PSM', 'SWAT', 'WADI', 'NIPS_TS_Swan', 'NIPS_TS_Water']# 'UCR']
+# dataset_list = ['PSM']# 'UCR']
 
 
 import subprocess
@@ -47,4 +55,6 @@ def run_baselines():
 
 
 if __name__ == '__main__':
+    run_baselines()
+    run_baselines()
     run_baselines()

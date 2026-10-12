@@ -9,11 +9,12 @@ print('Current working directory: ', os.getcwd())
 
 # model_list = ['RF', 'SVM', 'AdaBoost', 'ExtraTrees', 'LightGBM']
 model_list = ['RF', 'SVM', 'AdaBoost', 'ExtraTrees', 'LightGBM', 'STAND']
-model_list = ['RF', 'SVM', 'AdaBoost', 'ExtraTrees', 'LightGBM', 'STAND']
+model_list = ['RF', 'SVM', 'AdaBoost', 'ExtraTrees', 'LightGBM']
 # model_list = ['SVM', 'AdaBoost', 'ExtraTrees', 'LightGBM']
 # model_list = ['ExtraTrees', 'LightGBM']
 # model_list = ['LightGBM']
 dataset_list = ['PSM', 'SWAT', 'WADI', 'NIPS_TS_Swan', 'NIPS_TS_Water']#, 'UCR']
+dataset_list = ['PSM']#, 'UCR']
 # dataset_list = ['PSM', 'WADI', 'NIPS_TS_Swan', 'NIPS_TS_Water']#, 'UCR']
 # dataset_list = ['PSM', 'WADI', 'NIPS_TS_Swan', 'NIPS_TS_Water']#, 'UCR']
 # dataset_list = ['SWAT']#, 'WADI', 'NIPS_TS_Swan', 'NIPS_TS_Water']#, 'UCR']
@@ -41,9 +42,15 @@ extra_config = {
 }
 proj_pth = pathlib.Path(__file__).parent.parent.parent
 logs_pth = proj_pth / 'logs'
-logs_file_pth = logs_pth / 'supervised_robust_exp.csv'
+
+noise_type = '_fp'
+# noise_type = ''
+
+logs_file_pth = logs_pth / f'supervised_robust_exp{noise_type}.csv'
+logs_file_pth2 = logs_pth / f'supervised_robust_exp_all_test{noise_type}.csv'
 
 def check_exist(model_name, dataset_name, noise_prob):
+    return False
     if logs_file_pth.exists():
         import pandas as pd
         df = pd.read_csv(logs_file_pth)
@@ -121,10 +128,10 @@ if __name__ == '__main__':
     #  nohup python src/scripts/run_supervised_robust.py 2>&1 | tee logs/log_file/robust2.txt &
     run_task = 0
     train_test_split = 0.5
-    parallel_jobs = -1
+    parallel_jobs = 5
     # random
     import numpy as np
-    np.random.shuffle(task_list_generator)
+    # np.random.shuffle(task_list_generator)
 
     if parallel_jobs > 0:
         import concurrent.futures
@@ -134,7 +141,7 @@ if __name__ == '__main__':
                 model = [model]
                 dataset = [dataset]
                 if check_exist(model[0], dataset[0], noise_prob):
-                    # print(f'Experiment for model: {model[0]}, dataset: {dataset[0]} with noise_prob: {noise_prob} already exists. Skipping...')
+                    print(f'Experiment for model: {model[0]}, dataset: {dataset[0]} with noise_prob: {noise_prob} already exists. Skipping...')
                     continue
                 if model[0] == 'STAND':
                     futures.append(executor.submit(run_stand, dataset, train_test_split, noise_prob=noise_prob))

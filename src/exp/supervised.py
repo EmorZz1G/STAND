@@ -16,6 +16,11 @@ logs_pth.mkdir(exist_ok=True)
 logs_file_pth = logs_pth / 'supervised_exp.csv'
 logs_file_pth2 = logs_pth / 'supervised_exp_all_test.csv'
 # logs_file_pth3 = logs_pth / 'supervised_exp_left_test.csv'
+
+# 暂时用于消融
+logs_file_pth = logs_pth / 'supervised_exp_abl0911.csv'
+logs_file_pth2 = logs_pth / 'supervised_exp_all_test.csv'
+
 import os
 import sys
 sys.path.append(str(proj_pth))
@@ -62,41 +67,43 @@ while True:
         result1['quantile'] = config.quantile - 0.05*cnt
         print('Adjust quantile to: ', config.quantile - 0.05*cnt)
 
-cnt = 0
-while True:
-    test_all_pred = metricor.get_pred(test_all_score, quantile=config.quantile - 0.05*cnt)
-    if sum(test_all_pred) > 0:
-        break
-    else:
-        cnt += 1
-        if config.quantile - 0.05*cnt < 0:
-            raise ValueError(f'Quantile adjustment out of range!, model: {config.model_name}, dataset: {config.dataset_name}, index: {config.index}')
-        result2['quantile'] = config.quantile - 0.05*cnt
-        print('Adjust quantile to: ', config.quantile - 0.05*cnt)
+# cnt = 0
+# while True:
+#     test_all_pred = metricor.get_pred(test_all_score, quantile=config.quantile - 0.05*cnt)
+#     if sum(test_all_pred) > 0:
+#         break
+#     else:
+#         cnt += 1
+#         if config.quantile - 0.05*cnt < 0:
+#             raise ValueError(f'Quantile adjustment out of range!, model: {config.model_name}, dataset: {config.dataset_name}, index: {config.index}')
+#         result2['quantile'] = config.quantile - 0.05*cnt
+#         print('Adjust quantile to: ', config.quantile - 0.05*cnt)
 
-left_len = len(test_all_score) - len(test_score)
-test_left_score = test_all_score.copy()[-left_len:]
-test_left_labels = all_test_labels.copy()[-left_len:]
-cnt = 0
-while True:
-    test_left_pred = metricor.get_pred(test_left_score, quantile=config.quantile - 0.05*cnt)
-    if sum(test_left_pred) > 0:
-        break
-    else:
-        cnt += 1
-        if config.quantile - 0.05*cnt < 0:
-            raise ValueError(f'Quantile adjustment out of range!, model: {config.model_name}, dataset: {config.dataset_name}, index: {config.index}')
-        result3['quantile'] = config.quantile - 0.05*cnt
-        print('Adjust quantile to: ', config.quantile - 0.05*cnt)
+# left_len = len(test_all_score) - len(test_score)
+# test_left_score = test_all_score.copy()[-left_len:]
+# test_left_labels = all_test_labels.copy()[-left_len:]
+# cnt = 0
+# while True:
+#     test_left_pred = metricor.get_pred(test_left_score, quantile=config.quantile - 0.05*cnt)
+#     if sum(test_left_pred) > 0:
+#         break
+#     else:
+#         cnt += 1
+#         if config.quantile - 0.05*cnt < 0:
+#             raise ValueError(f'Quantile adjustment out of range!, model: {config.model_name}, dataset: {config.dataset_name}, index: {config.index}')
+#         result3['quantile'] = config.quantile - 0.05*cnt
+#         print('Adjust quantile to: ', config.quantile - 0.05*cnt)
 
 for metric in config.metric_list:
     val1 = metricor.metric_by_name(metric, test_labels, test_score, test_pred)
-    val2 = metricor.metric_by_name(metric, all_test_labels, test_all_score, test_all_pred)
-    val3 = metricor.metric_by_name(metric, test_left_labels, test_left_score, test_left_pred)
+    # val2 = metricor.metric_by_name(metric, all_test_labels, test_all_score, test_all_pred)
+    # val3 = metricor.metric_by_name(metric, test_left_labels, test_left_score, test_left_pred)
     result1.update({metric: val1})
-    result2.update({metric: val2})
-    result3.update({metric: val3})
-    print(f"Metric: {metric}, Test: {val1:.4f}, All Test: {val2:.4f}, Left Test: {val3:.4f}")
+    # result2.update({metric: val2})
+    # result3.update({metric: val3})
+    # print(f"Metric: {metric}, Test: {val1:.4f}, All Test: {val2:.4f}, Left Test: {val3:.4f}")
+
+# result1['model_name'] = 'STAND_weight1'
 
 import pandas as pd
 df = pd.DataFrame([result1])
@@ -107,10 +114,10 @@ if not logs_file_pth.exists():
 else:
     df.to_csv(logs_file_pth, index=False, header=False, mode='a')
 
-if not logs_file_pth2.exists():
-    df2.to_csv(logs_file_pth2, index=False)
-else:
-    df2.to_csv(logs_file_pth2, index=False, header=False, mode='a')
+# if not logs_file_pth2.exists():
+#     df2.to_csv(logs_file_pth2, index=False)
+# else:
+#     df2.to_csv(logs_file_pth2, index=False, header=False, mode='a')
 
 # if not logs_file_pth3.exists():
 #     df3.to_csv(logs_file_pth3, index=False)

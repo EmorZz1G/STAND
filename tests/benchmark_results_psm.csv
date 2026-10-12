@@ -1,0 +1,2 @@
+Model,Type,Train Peak VRAM (MB),Infer Peak VRAM (MB),Train RAM Delta (MB),Infer RAM Delta (MB),Train Time / Epoch (s),Total Train Time (s),Train Throughput (samples/s),Infer Total Time (s),Infer Latency (ms/sample),Infer Throughput (samples/s)
+STAND,Deep Learning (GPU),86.46,65.88,426.65,7.69,1.956,5.87,22452.9,0.77,0.0088,113693.4

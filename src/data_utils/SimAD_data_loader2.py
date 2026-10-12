@@ -971,3 +971,71 @@ class RandomSupervisedDataset(Dataset):
             return np.float32(self.all_test_y[
                                 index // self.step * self.win_size:index // self.step * self.win_size + self.win_size]), np.float32(
                 self.all_test_labels[index // self.step * self.win_size:index // self.step * self.win_size + self.win_size])
+
+
+
+from itertools import groupby
+from operator import itemgetter
+
+def convert_vector_to_events(vector = [0, 1, 1, 0, 0, 1, 0]):
+    """
+    Convert a binary vector (indicating 1 for the anomalous instances)
+    to a list of events. The events are considered as durations,
+    i.e. setting 1 at index i corresponds to an anomalous interval [i, i+1).
+    
+    :param vector: a list of elements belonging to {0, 1}
+    :return: a list of couples, each couple representing the start and stop of
+    each event
+    """
+    positive_indexes = [idx for idx, val in enumerate(vector) if val > 0]
+    events = []
+    for k, g in groupby(enumerate(positive_indexes), lambda ix : ix[0] - ix[1]):
+        cur_cut = list(map(itemgetter(1), g))
+        events.append((cur_cut[0], cur_cut[-1]))
+    
+    # Consistent conversion in case of range anomalies (for indexes):
+    # A positive index i is considered as the interval [i, i+1),
+    # so the last index should be moved by 1
+    events = [(x, y+1) for (x,y) in events]
+        
+    return (events)
+
+class FewShotSupervisedDataset(Dataset):
+    def __init__(self, data_y, data_labels, win_size, step=1, mode="train",
+                 fewshot_num=1,
+                 seed=42):
+        N = len(data_y)//2
+        left_test_y = data_y[N:]
+        left_test_labels = data_labels[N:]
+        tmp_y = data_y[:N]
+        tmp_labels = data_labels[:N]
+        tmp_events = convert_vector_to_events(tmp_labels)
+        if (fewshot_num) > len(tmp_events):
+            fewshot_num = len(tmp_events)
+            raise ValueError("few shot num err")
+        stop_idx = tmp_events[fewshot_num][0]
+        self.train_ = self.train = tmp_y[:stop_idx]
+        self.train_labels = tmp_labels[:stop_idx]
+        self.test_y = self.test = left_test_y
+        self.test_labels = left_test_labels
+
+    def __len__(self):
+        if self.mode == "train":
+            return (self.train_y.shape[0] - self.win_size) // self.step + 1
+        elif (self.mode == 'test'):
+            return (self.test_y.shape[0] - self.win_size) // self.win_size + 1
+    
+
+    def __getitem__(self, index):
+        index = index * self.step
+        if self.mode == "train":
+            return np.float32(self.train[index:index + self.win_size]), np.float32(
+                self.train_labels[index:index + self.win_size])
+        elif (self.mode == 'test'):
+            return np.float32(self.test[
+                                index // self.step * self.win_size:index // self.step * self.win_size + self.win_size]), np.float32(
+                self.test_labels[index // self.step * self.win_size:index // self.step * self.win_size + self.win_size])
+        elif (self.mode == 'all_test' or self.mode == 'all'):
+            return np.float32(self.all_test_y[
+                                index // self.step * self.win_size:index // self.step * self.win_size + self.win_size]), np.float32(
+                self.all_test_labels[index // self.step * self.win_size:index // self.step * self.win_size + self.win_size])

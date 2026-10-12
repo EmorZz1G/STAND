@@ -11,7 +11,10 @@ model_list = ['IForest', 'LOF', 'POLY', 'MatrixProfile', 'PCA', 'HBOS', 'KNN', '
 # model_list = ['MatrixProfile', 'PCA', 'HBOS', 'KNN', 'KMeansAD', 'KShapeAD', 'Random']
 # model_list = ['PCA', 'HBOS', 'KNN', 'KMeansAD', 'KShapeAD', 'Random']
 # model_list = ['HBOS', 'KNN', 'KMeansAD', 'Random']
-model_list = ['Random','IForest','LOF','PCA','HBOS','KNN','KMeansAD']
+# model_list = ['Random','IForest','LOF','PCA','HBOS','KMeansAD']
+model_list = ['IForest','LOF','PCA','HBOS','KMeansAD','Random']
+# model_list = model_list[2:]
+model_list = ['KMeansAD','Random']
 dataset_list = ['PSM', 'SWAT', 'WADI', 'NIPS_TS_Swan', 'NIPS_TS_Water']#, 'UCR']
 
 extra_config = {
@@ -41,4 +44,7 @@ def run_baselines():
 
 
 if __name__ == '__main__':
+    run_baselines()
+
+    run_baselines()
     run_baselines()

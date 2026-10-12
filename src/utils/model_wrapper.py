@@ -3,12 +3,58 @@ import math
 try:
     from slidingWindows import find_length_rank
 except:
-    import os
-    import sys
-    import pathlib
-    proj_pth = pathlib.Path(__file__).parent.parent.resolve()
-    sys.path.append((proj_pth))
-    from src.utils.slidingWindows import find_length_rank
+    def find_length_rank(data, rank=1):
+        data = data.squeeze()
+        if len(data.shape)>1: return 0
+        if rank==0: return 1
+        data = data[:min(20000, len(data))]
+        
+        base = 3
+        auto_corr = acf(data, nlags=400, fft=True)[base:]
+        
+        # plot_acf(data, lags=400, fft=True)
+        # plt.xlabel('Lags')
+        # plt.ylabel('Autocorrelation')
+        # plt.title('Autocorrelation Function (ACF)')
+        # plt.savefig('/data/liuqinghua/code/ts/TSAD-AutoML/AutoAD_Solution/candidate_pool/cd_diagram/ts_acf.png')
+
+        local_max = argrelextrema(auto_corr, np.greater)[0]
+
+        # print('auto_corr: ', auto_corr)
+        # print('local_max: ', local_max)
+
+        try:
+            # max_local_max = np.argmax([auto_corr[lcm] for lcm in local_max])
+            sorted_local_max = np.argsort([auto_corr[lcm] for lcm in local_max])[::-1]    # Ascending order
+            max_local_max = sorted_local_max[0]     # Default
+            if rank == 1: max_local_max = sorted_local_max[0]
+            if rank == 2: 
+                for i in sorted_local_max[1:]: 
+                    if i > sorted_local_max[0]: 
+                        max_local_max = i 
+                        break
+            if rank == 3:
+                for i in sorted_local_max[1:]: 
+                    if i > sorted_local_max[0]: 
+                        id_tmp = i
+                        break
+                for i in sorted_local_max[id_tmp:]:
+                    if i > sorted_local_max[id_tmp]: 
+                        max_local_max = i           
+                        break
+            # print('sorted_local_max: ', sorted_local_max)
+            # print('max_local_max: ', max_local_max)
+            if local_max[max_local_max]<3 or local_max[max_local_max]>300:
+                return 125
+            return local_max[max_local_max]+base
+        except:
+            return 125
+    # import os
+    # import sys
+    # import pathlib
+    # proj_pth = pathlib.Path(__file__).parent.parent.resolve()
+    # sys.path.append((proj_pth))
+    # from src.utils.slidingWindows import find_length_rank
 
 # Unsupervise_AD_Pool = ['FFT', 'SR', 'NORMA', 'Series2Graph', 'Sub_IForest', 'IForest', 'LOF', 'Sub_LOF', 'POLY', 'MatrixProfile', 'Sub_PCA', 'PCA', 'HBOS', 
 #                         'Sub_HBOS', 'KNN', 'Sub_KNN','KMeansAD', 'KMeansAD_U', 'KShapeAD', 'COPOD', 'CBLOF', 'COF', 'EIF', 'RobustPCA', 'Lag_Llama', 'TimesFM', 'Chronos', 'MOMENT_ZS','Random']
@@ -19,9 +65,9 @@ Unsupervise_AD_Pool = ['IForest', 'LOF', 'POLY', 'MatrixProfile', 'PCA', 'HBOS',
 #                         'AnomalyTransformer', 'TimesNet', 'FITS', 'Donut', 'OFA', 'MOMENT_FT', 'M2N2', 'DualTF']
 
 Semisupervise_AD_Pool = ['OCSVM', 'AutoEncoder', 'CNN', 'LSTMAD', 'TranAD', 'USAD', 'OmniAnomaly', 
-                        'AnomalyTransformer', 'TimesNet', 'M2N2', 'LFTSAD', 'CATCH']
+                        'AnomalyTransformer', 'TimesNet', 'M2N2', 'LFTSAD', 'CATCH', 'STAND_UNCLF', 'STAND_UNCLF_Attn', 'STAND_UNCLF_GRU']
 
-Supervise_AD_Pool = ['KNN', 'LR', 'RF', 'SVM', 'STAND', 'AdaBoost', 'ExtraTrees', 'LightGBM']
+Supervise_AD_Pool = ['KNN', 'LR', 'RF', 'SVM', 'STAND', 'AdaBoost', 'ExtraTrees', 'LightGBM', 'STAND_Attn', 'STAND_GRU']
 
 def run_Unsupervise_AD(model_name, data, **kwargs):
     try:
@@ -141,6 +187,28 @@ def run_LightGBM_S(data_train, data_train_labels, data_test, data_all_test=None,
 def run_STAND_S(data_train, data_train_labels, data_test,  data_all_test=None, win_size=32, d_model=32, num_layers=1, bidirectional=False, epochs=10, batch_size=128, lr=1e-3, **kwargs):
     from ..models.supervised import STAND
     clf = STAND(win_size=win_size, d_model=d_model, num_layers=num_layers, bidirectional=bidirectional, epochs=epochs, batch_size=batch_size, lr=lr, **kwargs)
+    clf.fit(data_train, data_train_labels)
+    score = clf.decision_function(data_test)
+    if data_all_test is not None:
+        all_score = clf.decision_function(data_all_test)
+        return score.ravel(), all_score.ravel()
+    else:
+        return score.ravel()
+
+def run_STAND_Attn_S(data_train, data_train_labels, data_test,  data_all_test=None, win_size=32, d_model=32, num_layers=1, bidirectional=False, epochs=10, batch_size=128, lr=1e-3, **kwargs):
+    from ..models.supervised import STAND
+    clf = STAND(win_size=win_size, d_model=d_model, num_layers=num_layers, bidirectional=bidirectional, epochs=epochs, batch_size=batch_size, lr=lr, module='Attn', **kwargs)
+    clf.fit(data_train, data_train_labels)
+    score = clf.decision_function(data_test)
+    if data_all_test is not None:
+        all_score = clf.decision_function(data_all_test)
+        return score.ravel(), all_score.ravel()
+    else:
+        return score.ravel()
+
+def run_STAND_GRU_S(data_train, data_train_labels, data_test,  data_all_test=None, win_size=32, d_model=32, num_layers=1, bidirectional=False, epochs=10, batch_size=128, lr=1e-3, **kwargs):
+    from ..models.supervised import STAND
+    clf = STAND(win_size=win_size, d_model=d_model, num_layers=num_layers, bidirectional=bidirectional, epochs=epochs, batch_size=batch_size, lr=lr, module='GRU', **kwargs)
     clf.fit(data_train, data_train_labels)
     score = clf.decision_function(data_test)
     if data_all_test is not None:
@@ -426,6 +494,40 @@ def run_TranAD(data_train, data_test, win_size=10, lr=1e-3, **kwargs):
     score = clf.decision_function(data_test)
     del clf
     return score.ravel()
+
+
+def run_STAND_UNCLF(data_train, data_test,  data_all_test=None, win_size=64, d_model=128, num_layers=2, bidirectional=False, epochs=10, batch_size=128, lr=1e-3, **kwargs):
+    from ..models.STANDunclassifer import STANDunclf
+    clf = STANDunclf(win_size=win_size, d_model=d_model, num_layers=num_layers, bidirectional=bidirectional, epochs=epochs, batch_size=batch_size, lr=lr, **kwargs)
+    clf.fit(data_train)
+    score = clf.decision_function(data_test)
+    if data_all_test is not None:
+        all_score = clf.decision_function(data_all_test)
+        return score.ravel(), all_score.ravel()
+    else:
+        return score.ravel()
+
+def run_STAND_UNCLF_Attn(data_train, data_test,  data_all_test=None,win_size=64, d_model=128, num_layers=2, bidirectional=False, epochs=10, batch_size=128, lr=1e-3, **kwargs):
+    from ..models.STANDunclassifer import STANDunclf
+    clf = STANDunclf(win_size=win_size, d_model=d_model, num_layers=num_layers, bidirectional=bidirectional, epochs=epochs, batch_size=batch_size, lr=lr, module='Attn', **kwargs)
+    clf.fit(data_train)
+    score = clf.decision_function(data_test)
+    if data_all_test is not None:
+        all_score = clf.decision_function(data_all_test)
+        return score.ravel(), all_score.ravel()
+    else:
+        return score.ravel()
+
+def run_STAND_UNCLF_GRU(data_train, data_test,  data_all_test=None, win_size=64, d_model=128, num_layers=2, bidirectional=False, epochs=10, batch_size=128, lr=1e-3, **kwargs):
+    from ..models.STANDunclassifer import STANDunclf
+    clf = STANDunclf(win_size=win_size, d_model=d_model, num_layers=num_layers, bidirectional=bidirectional, epochs=epochs, batch_size=batch_size, lr=lr, module='GRU', **kwargs)
+    clf.fit(data_train)
+    score = clf.decision_function(data_test)
+    if data_all_test is not None:
+        all_score = clf.decision_function(data_all_test)
+        return score.ravel(), all_score.ravel()
+    else:
+        return score.ravel()
 
 def run_AnomalyTransformer(data_train, data_test, win_size=100, lr=1e-4, batch_size=128, **kwargs):
     from ..models.AnomalyTransformer import AnomalyTransformer
