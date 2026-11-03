@@ -159,23 +159,18 @@ pip install -r requirements.txt
 ## 🚀 Quick Start
 
 ### 1. Download Datasets
-The benchmark suite evaluates five real-world multivariate datasets: **PSM**, **SWaT**, **WADI**, **Swan**, and **Water**. Preprocessed benchmark sequences can be accessed following the [TSB-UAD](https://github.com/TheDatumOrg/TSB-AD) or [FTSAD](https://github.com/EmorZz1G/FTSAD) repositories. Place the dataset files into the `data/` directory.
+The benchmark suite evaluates five real-world multivariate datasets: **PSM**, **SWaT**, **WADI**, **Swan**, and **Water**. Preprocessed benchmark sequences can be accessed following the [FTSAD](https://github.com/EmorZz1G/FTSAD) repositories. Place the dataset files into the `data/` directory.
 
 ### 2. Run Supervised Benchmark (STAND & Baselines)
 ```bash
-# Train and evaluate STAND on a specific dataset (e.g., PSM)
-cd src/exp
-python supervised.py --model_name STAND --dataset_name PSM --d_model 128 --num_layers 1 --win_size 32
-
-# Run all supervised baselines across all datasets
-cd ../scripts
-bash run_supervised.sh  # or: python run_supervised.py
+cd src/scripts
+python run_supervised.py
 ```
 
 ### 3. Run Few-Shot & Label Scaling Experiments
 ```bash
-# Evaluate label scaling on PSM subsets (SP1, SP2, SP3)
-python supervised.py --model_name STAND --dataset_name PSM_SP1
+cd src/scripts
+python run_supervised_fewshot.py
 ```
 
 ### 4. Run Unsupervised Baselines
@@ -219,3 +214,9 @@ If you find this research or code useful in your work, please consider citing ou
 ## 📄 License
 
 This project is licensed under the [MIT License](LICENSE).
+
+---
+
+<p align="center">
+  <sub><em>Disclaimer: This documentation was summarized and formatted with the assistance of AI. While carefully cross-checked against our paper and experimental logs, please refer to the <a href="docs/static/pdfs/main.pdf">accepted paper manuscript</a> and codebase for definitive details. If you notice any discrepancies, typos, or have questions, please feel free to open an issue or contact the authors.</em></sub>
+</p>
