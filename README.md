@@ -61,7 +61,7 @@ STAND is designed with simplicity, stability, and extreme computational efficien
   <em>Figure 2: Overall architecture of the STAND framework.</em>
 </p>
 
-1. **Feature Embedding**: A pointwise Multi-Layer Perceptron (Pointwise MLP + GELU activations + Layer Normalization) projects raw multivariate inputs $\mathbf{x}_t \in \mathbb{R}^C$ into a $d_{\text{model}}$-dimensional latent space.
+1. **Feature Embedding**: A pointwise Multi-Layer Perceptron (Pointwise MLP + GELU activations + Layer Normalization) projects raw multivariate inputs `x_t ∈ ℝ^C` into a `d_model`-dimensional latent space.
 2. **Temporal Encoding Module (TEM)**:
    - **Default (STAND)**: A shallow Bidirectional LSTM (1–2 layers) captures rich temporal context from both anomaly onset and subsequent post-incident recovery patterns for offline auditing.
    - **Streaming (STAND-Causal)**: A unidirectional causal forward-only LSTM variant with zero look-ahead buffering delay for real-time online telemetry monitoring.
@@ -82,21 +82,21 @@ STAND is designed with simplicity, stability, and extreme computational efficien
 - In multi-metric evaluations, STAND demonstrates marked superiority in **prediction certainty (CCE: 38.50 vs. <17.55 for all unsupervised detectors)** and **unbiased event localization (UAff-F1: 58.22 vs. LSTM 46.09, CATCH 27.88)**.
 - Across all 30 dataset-metric evaluation settings, non-parametric ranking confirms STAND achieves the **top overall average rank of 5.70**, surpassing all 20 evaluated models.
 
-### 2. Acute Few-Shot Efficiency ($k = 5 \sim 7$ Break-Even Point)
+### 2. Acute Few-Shot Efficiency (k = 5 ~ 7 Break-Even Point)
 <p align="center">
   <img src="docs/static/images/figure4_fewshot.png" alt="Event-Level Few-Shot Label Efficiency" width="95%"/>
   <br>
-  <em>Figure 4: Event-level few-shot label efficiency across varying numbers of observed failure episodes ($k \in \{1, 3, \dots, 15\}$) on PSM and SWaT.</em>
+  <em>Figure 4: Event-level few-shot label efficiency across varying numbers of observed failure episodes (k ∈ {1, 3, ..., 15}) on PSM and SWaT.</em>
 </p>
 
 - On PSM (subset SP1), observing as few as **12 failure episodes** (only 10% data volume, with 83.3% of test failure events never seen in training) allows STAND to outperform deep unsupervised baselines.
-- Controlled event-level scaling demonstrates a decisive break-even point at **$k = 5 \sim 7$ discrete episodes**, after which STAND rapidly outpaces unsupervised counterparts.
+- Controlled event-level scaling demonstrates a decisive break-even point at **k = 5 ~ 7 discrete episodes**, after which STAND rapidly outpaces unsupervised counterparts.
 
 ### 3. Resilience to Operational Label Noise
 <p align="center">
   <img src="docs/static/images/figure5_noise.png" alt="Robustness under Point Noise" width="95%"/>
   <br>
-  <em>Figure 5: Robustness of supervised detectors against random Point Noise up to $\rho = 0.10$ on PSM, with unsupervised CATCH as a baseline.</em>
+  <em>Figure 5: Robustness of supervised detectors against random Point Noise up to ρ = 0.10 on PSM, with unsupervised CATCH as a baseline.</em>
 </p>
 
 - STAND maintains remarkable robustness under point label corruption (up to 10%) and contiguous block noise; sequential recurrent modeling acts as an inductive temporal smoother, preventing overfitting to isolated misannotations.
@@ -106,7 +106,7 @@ By comparing identical sequential backbones trained under unsupervised reconstru
 - BCE supervision delivers a net surge of **+37.37 in CCE, +36.25 in UAff-F1, and +19.70 in AUC-ROC**, directly confirming that the primary bottleneck stems from the **unsupervised surrogate proxy loss**, not sequence encoder capacity.
 
 ### 5. Minimalist Footprint & High Industrial Throughput
-| Model | Paradigm | Params (M) | Peak VRAM (MB) | Infer. Latency ($\mu$s) | Throughput ($10^3$ pts/s) |
+| Model | Paradigm | Params (M) | Peak VRAM (MB) | Infer. Latency (μs) | Throughput (10³ pts/s) |
 | :--- | :--- | :---: | :---: | :---: | :---: |
 | **Anomaly Transformer** | UTAD-II (GPU) | 4.80 | 5497.1 | 240.0 | 4.2 |
 | **CATCH** | UTAD-II (GPU) | 89.86 | 2231.7 | 7.6 | 132.0 |
